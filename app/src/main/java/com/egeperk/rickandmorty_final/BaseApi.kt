@@ -9,12 +9,9 @@ class BaseApi {
 
     fun getApolloClient(): ApolloClient {
         check(Looper.myLooper() == Looper.getMainLooper()) {
-
         }
-
         val okHttpApiClient = OkHttpClient.Builder().build()
-        return ApolloClient.Builder().serverUrl("https://rickandmortyapi.com/graphql").okHttpClient(okHttpApiClient).build()
-
+        return ApolloClient.Builder().serverUrl("https://rickandmortyapi.com/graphql")
+            .okHttpClient(okHttpApiClient).build()
     }
-
 }
