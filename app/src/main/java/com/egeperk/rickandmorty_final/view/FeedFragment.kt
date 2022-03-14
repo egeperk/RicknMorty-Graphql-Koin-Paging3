@@ -118,6 +118,5 @@ class FeedFragment : Fragment(), DialogAdapter.OnItemClickListener {
             viewModel.queryCharList()
         }
 
-
     }
 }
