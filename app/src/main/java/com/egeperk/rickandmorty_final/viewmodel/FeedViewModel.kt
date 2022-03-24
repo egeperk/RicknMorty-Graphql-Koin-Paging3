@@ -1,11 +1,14 @@
 package com.egeperk.rickandmorty_final.viewmodel
 
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
+import com.egeperk.rickandmorty_final.BR
 import com.egeperk.rickandmorty_final.repo.CharRepository
 import com.egeperk.rickandmorty_final.view.State
 import com.example.rnm_mvvm.CharactersQuery
@@ -22,9 +25,11 @@ class FeedViewModel @Inject constructor(private val repository: CharRepository) 
     val channel = Channel<Unit>(Channel.CONFLATED)
     var page: Int? = 0
     var currentQuery = ""
+
     private val _charactersList by lazy { MutableLiveData<State.ViewState<ApolloResponse<CharactersQuery.Data>>>() }
     val charactersList: LiveData<State.ViewState<ApolloResponse<CharactersQuery.Data>>>
         get() = _charactersList
+    val rvDataset = MutableLiveData<List<CharactersQuery.Result?>>()
 
     fun queryCharList() = viewModelScope.launch {
         _charactersList.postValue(State.ViewState.Loading())
@@ -33,6 +38,7 @@ class FeedViewModel @Inject constructor(private val repository: CharRepository) 
                 val response = repository.queryCharList(page, currentQuery)
                 _charactersList.postValue(State.ViewState.Success(response))
                 page = response.data?.characters?.info?.next
+                rvDataset.postValue(response.data?.characters?.results!!)
             } catch (e: ApolloException) {
                 _charactersList.postValue(State.ViewState.Error("Error!"))
             }

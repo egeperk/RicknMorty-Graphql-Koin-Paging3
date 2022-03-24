@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.apollographql.apollo3.api.Query
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.databinding.CharRowBinding
 import com.example.rnm_mvvm.CharactersQuery
@@ -26,7 +27,7 @@ class ItemAdapter :
     }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        holder.binding.character = getItem(position)
+        holder.binding.item = getItem(position)
 
         if (position == itemCount - 1) {
             onEndOfListReached?.invoke()
@@ -57,3 +58,5 @@ class CharacterDiffUtil : DiffUtil.ItemCallback<CharactersQuery.Result>() {
 fun setImageUrl(imageView: ImageView, url: String?) {
     imageView.load(url) { crossfade(true) }
 }
+
+
