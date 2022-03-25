@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+<data>
+    <variable
+        name="dataSet"
+        type="com.egeperk.rickandmorty_final.viewmodel.FeedViewModel" />
+    <variable
+        name="loadMore"
+        type="com.egeperk.rickandmorty_final.adapter.RecyclerViewBindings.OnLoadMoreListener" />
 
-    <data>
-        <variable
-            name="dataset"
-            type="com.egeperk.rickandmorty_final.viewmodel.FeedViewModel" />
-        <variable
-            name="layoutId"
-            type="Integer" />
-    </data>
+
+
+
+</data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -41,8 +44,9 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            app:data="@{dataset.rvDataset}"
-            app:layout="@{layoutId}"
+            app:layout ="@{@layout/char_row}"
+            app:entries="@{dataSet.rvDataset}"
+            app:onLoadMore="@{loadMore}"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -53,14 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_header_tv" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
