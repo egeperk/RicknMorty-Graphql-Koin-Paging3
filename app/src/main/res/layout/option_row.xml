@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-<import type="android.view.View"/>
+
+        <variable
+            name="index"
+            type="Integer" />
+
         <variable
             name="item"
             type="com.egeperk.rickandmorty_final.model.Character" />
@@ -32,8 +36,7 @@
             android:textColor="#000000"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/btn_option_image_view"
@@ -41,7 +44,7 @@
             android:layout_height="24dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ellipse1"
+            android:src="@{item.selected ? @drawable/groupellipse1 : @drawable/ellipse1}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

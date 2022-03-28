@@ -1,5 +1,6 @@
 package com.egeperk.rickandmorty_final.view
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
+import com.egeperk.rickandmorty_final.BR
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
@@ -19,6 +23,7 @@ import com.egeperk.rickandmorty_final.model.Character
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.text.FieldPosition
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -32,6 +37,7 @@ class FeedFragment : Fragment() {
 
     //private val dialogAdapter by lazy { DialogAdapter(filterList, this) }
     private var dialogBinding: FilterOptionItemListBinding? = null
+    private var opBinding: OptionRowBinding? = null
     private lateinit var dialogBuilder: AlertDialog.Builder
     private lateinit var dialog: AlertDialog
 
@@ -76,8 +82,8 @@ class FeedFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         filterList = ArrayList<com.egeperk.rickandmorty_final.model.Character>()
-        filterList.add(Character("Rick", (R.drawable.ellipse1)))
-        filterList.add(Character("Morty", (R.drawable.ellipse1)))
+        filterList.add(Character("Rick", (R.drawable.ellipse1), false))
+        filterList.add(Character("Morty", (R.drawable.ellipse1), false))
         //observeLiveData()
 
         binding.filterBtn.setOnClickListener(View.OnClickListener {
@@ -122,18 +128,23 @@ class FeedFragment : Fragment() {
 
         dialogBuilder = AlertDialog.Builder(context)
         val layoutInflater = LayoutInflater.from(context)
-        val opBinding = OptionRowBinding.inflate(layoutInflater)
         dialogBinding = FilterOptionItemListBinding.inflate(layoutInflater)
-
-        //dialogBinding?.layoutIdDialog = R.layout.option_row
         dialogBinding?.item = filterList
+        opBinding = OptionRowBinding.inflate(layoutInflater)
+
+
 
         dialogBinding?.listener = object : RecyclerViewBindings.OnItemClickListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onItemClick(view: View, vararg data: Any) {
                 Toast.makeText(context, "xxxx", Toast.LENGTH_SHORT).show()
+                println("clicked")
+                (data[0] as Character).isSelected = true
+                dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
             }
-
         }
+
+
 
         /*
        xBinding.listener = object: RecyclerViewBindings.OnItemClickListener{
@@ -142,7 +153,6 @@ class FeedFragment : Fragment() {
                    Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show()
                }
            }
-
        }
 
          */
@@ -160,7 +170,7 @@ class FeedFragment : Fragment() {
     }
 
 
-    fun onFilterClick(selectedPosition: Int) {
+    fun onItemClickListener(selectedPosition: Int) {
         charAdapter.submitList(emptyList())
         viewModel.channel.trySend(Unit)
         viewModel.page = 0

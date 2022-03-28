@@ -30,6 +30,10 @@ object RecyclerViewBindings {
         fun onItemClick(view: View, vararg data: Any)
     }
 
+    interface OnRecyclerItemClick {
+        fun onOptionSelected(position: Int)
+    }
+
     interface LayoutSelector {
         fun onSelectLayout(item: Any?): Int
     }
@@ -73,15 +77,25 @@ object RecyclerViewBindings {
         headerIdGetter: HeaderIdGetter?,
         headerLayoutId: Int?
     ) {
-        entries(array, object : LayoutSelector {
-            override fun onSelectLayout(item: Any?): Int {
-                return if ( item != null && item is LoadingItem) {
-                    R.layout.item_loading
-                } else {
-                    layoutId
+        entries(
+            array,
+            object : LayoutSelector {
+                override fun onSelectLayout(item: Any?): Int {
+                    return if (item != null && item is LoadingItem) {
+                        R.layout.item_loading
+                    } else {
+                        layoutId
+                    }
                 }
-            }
-        }, listener, itemIdGetter, lifecycleOwner, numItems, fastBind, headerIdGetter, headerLayoutId)
+            },
+            listener,
+            itemIdGetter,
+            lifecycleOwner,
+            numItems,
+            fastBind,
+            headerIdGetter,
+            headerLayoutId
+        )
     }
 
     @JvmStatic
@@ -109,19 +123,32 @@ object RecyclerViewBindings {
         headerIdGetter: HeaderIdGetter?,
         headerLayoutId: Int?
     ) {
-        entries(array, object : LayoutSelector {
-            override fun onSelectLayout(item: Any?): Int {
-                return if (item != null && item is LoadingItem) {
-                    R.layout.item_loading
-                } else {
-                    layoutId
+        entries(
+            array,
+            object : LayoutSelector {
+                override fun onSelectLayout(item: Any?): Int {
+                    return if (item != null && item is LoadingItem) {
+                        R.layout.item_loading
+                    } else {
+                        layoutId
+                    }
                 }
-            }
-        }, listener, itemIdGetter, lifecycleOwner, numItems, fastBind, headerIdGetter, headerLayoutId)
+            },
+            listener,
+            itemIdGetter,
+            lifecycleOwner,
+            numItems,
+            fastBind,
+            headerIdGetter,
+            headerLayoutId
+        )
     }
 
     @JvmStatic
-    @BindingAdapter(value = ["entries", "layout", "onItemClick", "itemIdGetter", "lifecycleOwner", "numItems", "fastBind", "headerIdGetter", "headerLayoutId"], requireAll = false)
+    @BindingAdapter(
+        value = ["entries", "layout", "onItemClick", "itemIdGetter", "lifecycleOwner", "numItems", "fastBind", "headerIdGetter", "headerLayoutId"],
+        requireAll = false
+    )
     fun RecyclerView.entries(
         array: List<Any>?,
         layoutSelector: LayoutSelector,
@@ -153,7 +180,10 @@ object RecyclerViewBindings {
     }
 
     @JvmStatic
-    @BindingAdapter(value = ["entries", "layout", "onItemClick", "itemIdGetter", "lifecycleOwner", "numItems", "fastBind", "tabLayout", "tabTexts", "headerIdGetter", "headerLayoutId"], requireAll = false)
+    @BindingAdapter(
+        value = ["entries", "layout", "onItemClick", "itemIdGetter", "lifecycleOwner", "numItems", "fastBind", "tabLayout", "tabTexts", "headerIdGetter", "headerLayoutId"],
+        requireAll = false
+    )
     fun ViewPager2.entries(
         array: List<Any>?,
         layoutId: Int,
@@ -205,8 +235,6 @@ object RecyclerViewBindings {
     ) : Adapter<RecyclerView.ViewHolder>() {
 
 
-
-
         init {
             setHasStableIds(itemIdGetter != null)
         }
@@ -214,7 +242,9 @@ object RecyclerViewBindings {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             return if (viewType == R.layout.item_loading) {
-                LoadingViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+                LoadingViewHolder(
+                    LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+                )
             } else {
 
                 RecyclerViewHolder(
@@ -236,7 +266,12 @@ object RecyclerViewBindings {
         override fun getItemViewType(position: Int): Int {
             return when (data.size) {
                 0 -> layoutSelector.onSelectLayout(null)
-                else -> layoutSelector.onSelectLayout(data[getIndexFromPosition(data.size, position)])
+                else -> layoutSelector.onSelectLayout(
+                    data[getIndexFromPosition(
+                        data.size,
+                        position
+                    )]
+                )
             }
         }
 
@@ -265,7 +300,8 @@ object RecyclerViewBindings {
                 }
                 notifyDataSetChanged()
             }*/
-            this.data.clear()
+
+            //this.data.clear()
             if (data != null) {
                 this.data.addAll(data)
             }
@@ -279,7 +315,6 @@ object RecyclerViewBindings {
                 val index = getIndexFromPosition(data.size, position)
                 holder.bind(data[index], index)
 
-
             }
         }
 
@@ -292,7 +327,8 @@ object RecyclerViewBindings {
         }
 
         override fun getItemId(position: Int): Long {
-            return itemIdGetter?.onGetItemId(data, getIndexFromPosition(data.size, position)) ?: super.getItemId(position)
+            return itemIdGetter?.onGetItemId(data, getIndexFromPosition(data.size, position))
+                ?: super.getItemId(position)
         }
 
         fun removeItemAt(index: Int): Any? {
@@ -318,7 +354,7 @@ object RecyclerViewBindings {
         ) : RecyclerView.ViewHolder(binding.root) {
 
             fun bind(item: Any?, index: Int) {
-                //binding.setVariable(BR.index, index)
+                binding.setVariable(BR.index, index)
                 binding.setVariable(BR.item, item)
                 binding.setVariable(BR.listener, listener)
 //                binding.setVariable(BR.lifecycleOwner, viewLifecycleOwner)
@@ -329,7 +365,8 @@ object RecyclerViewBindings {
             }
         }
 
-        inner class StickyHeaderViewHolder(private val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root) {
+        inner class StickyHeaderViewHolder(private val binding: ViewDataBinding) :
+            RecyclerView.ViewHolder(binding.root) {
             fun bind(item: Any?) {
                 binding.apply {
                     if (item !is LoadingItem) {
@@ -343,13 +380,22 @@ object RecyclerViewBindings {
 
         private class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-         fun getHeaderId(position: Int) =
-            headerIdGetter?.onGetHeaderItemId(data, getIndexFromPosition(data.size, position)) ?: super.getItemId(position)
+        fun getHeaderId(position: Int) =
+            headerIdGetter?.onGetHeaderItemId(data, getIndexFromPosition(data.size, position))
+                ?: super.getItemId(position)
 
         fun onCreateHeaderViewHolder(parent: ViewGroup?): StickyHeaderViewHolder? =
-            headerLayoutId?.let { StickyHeaderViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent?.context), it, parent, false)) }
+            headerLayoutId?.let {
+                StickyHeaderViewHolder(
+                    DataBindingUtil.inflate(
+                        LayoutInflater.from(
+                            parent?.context
+                        ), it, parent, false
+                    )
+                )
+            }
 
-         fun onBindHeaderViewHolder(holder: StickyHeaderViewHolder?, position: Int) {
+        fun onBindHeaderViewHolder(holder: StickyHeaderViewHolder?, position: Int) {
             if (data.size != 0 && holder is StickyHeaderViewHolder) {
                 val index = getIndexFromPosition(data.size, position)
                 holder.bind(data[index])
@@ -383,7 +429,12 @@ object RecyclerViewBindings {
                 }
             }
 
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
                 super.getItemOffsets(outRect, view, parent, state)
                 if (parent.getChildAdapterPosition(view) == 0) return
                 outRect.top = divider.intrinsicHeight
@@ -437,8 +488,11 @@ object RecyclerViewBindings {
 
 
     @JvmStatic
-    @BindingAdapter(value=["onLoadMore", "infiniteScroll"], requireAll = false)
-    fun RecyclerView.onLoadMoreInfiniteScroll(onLoadMoreListener: OnLoadMoreListener?, infiniteScroll: Boolean?) {
+    @BindingAdapter(value = ["onLoadMore", "infiniteScroll"], requireAll = false)
+    fun RecyclerView.onLoadMoreInfiniteScroll(
+        onLoadMoreListener: OnLoadMoreListener?,
+        infiniteScroll: Boolean?
+    ) {
         if (onLoadMoreListener != null) {
             if (infiniteScroll == false) {
                 clearOnScrollListeners()
@@ -454,7 +508,10 @@ object RecyclerViewBindings {
                             if (listSize > 0) {
                                 val lastItem = (adapter as RecyclerViewAdapter).getData().last()
                                 if (lastItem !is LoadingItem) {
-                                    (adapter as RecyclerViewAdapter).restoreItem(listSize, LoadingItem(listSize))
+                                    (adapter as RecyclerViewAdapter).restoreItem(
+                                        listSize,
+                                        LoadingItem(listSize)
+                                    )
                                     scrollToPosition(listSize)
                                     onLoadMoreListener.onLoadMore(listSize)
                                 }
