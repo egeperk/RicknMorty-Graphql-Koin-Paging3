@@ -27,11 +27,11 @@ object RecyclerViewBindings {
 
 
     interface OnItemClickListener {
-        fun onItemClick(view: View, vararg data: Any)
+        fun onItemClick(index: Int)
     }
 
     interface OnRecyclerItemClick {
-        fun onOptionSelected(position: Int)
+        fun onRecyclerItemClick(selectedPosition: Int)
     }
 
     interface LayoutSelector {
@@ -315,7 +315,8 @@ object RecyclerViewBindings {
                 val index = getIndexFromPosition(data.size, position)
                 holder.bind(data[index], index)
 
-            }
+              }
+
         }
 
         override fun getItemCount(): Int {

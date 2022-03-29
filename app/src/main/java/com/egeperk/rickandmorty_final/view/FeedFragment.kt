@@ -24,6 +24,7 @@ import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.text.FieldPosition
+import com.egeperk.rickandmorty_final.adapter.RecyclerViewBindings as RecyclerViewBindings1
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -33,7 +34,7 @@ class FeedFragment : Fragment() {
     private val charAdapter by lazy { ItemAdapter() }
     private val viewModel by viewModels<FeedViewModel>()
     private lateinit var filterList: ArrayList<Character>
-
+    private var selectedPosition = -1
 
     //private val dialogAdapter by lazy { DialogAdapter(filterList, this) }
     private var dialogBinding: FilterOptionItemListBinding? = null
@@ -74,7 +75,7 @@ class FeedFragment : Fragment() {
 
          */
 
-        binding.loadMore = object : RecyclerViewBindings.OnLoadMoreListener {
+        binding.loadMore = object : RecyclerViewBindings1.OnLoadMoreListener {
             override fun onLoadMore(listSize: Int) {
                 viewModel.queryCharList()
             }
@@ -119,12 +120,10 @@ class FeedFragment : Fragment() {
             }
         }
     }
-
  */
 
 
     private fun createPopup() {
-
 
         dialogBuilder = AlertDialog.Builder(context)
         val layoutInflater = LayoutInflater.from(context)
@@ -132,37 +131,43 @@ class FeedFragment : Fragment() {
         dialogBinding?.item = filterList
         opBinding = OptionRowBinding.inflate(layoutInflater)
 
-
-
-        dialogBinding?.listener = object : RecyclerViewBindings.OnItemClickListener {
+        dialogBinding?.listener = object : RecyclerViewBindings1.OnItemClickListener {
             @SuppressLint("NotifyDataSetChanged")
-            override fun onItemClick(view: View, vararg data: Any) {
-                Toast.makeText(context, "xxxx", Toast.LENGTH_SHORT).show()
-                println("clicked")
-                (data[0] as Character).isSelected = true
-                dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
+            override fun onItemClick(index: Int) {
+                Toast.makeText(context, "$index", Toast.LENGTH_SHORT).show()
+
+                filterList[index].isSelected = true
+
+                if (index == 0){
+                    filterList[1].isSelected = false
+                    viewModel.channel.trySend(Unit)
+                    viewModel.page = 0
+                    viewModel.currentQuery = "Rick"
+                    viewModel.queryCharList()
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+                if (index == 1){
+                    filterList[0].isSelected = false
+                    viewModel.rvDataset.postValue(emptyList())
+                    viewModel.channel.trySend(Unit)
+                    viewModel.page = 0
+                    viewModel.currentQuery = "Morty"
+                    viewModel.queryCharList()
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+
+                if (index != selectedPosition) {
+                    selectedPosition = index
+                    dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
+                } else {
+                    selectedPosition = -1
+                    dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
+                }
+
+
+
             }
         }
-
-
-
-        /*
-       xBinding.listener = object: RecyclerViewBindings.OnItemClickListener{
-           override fun onItemClick(view: View, vararg data: Any) {
-               xBinding.root.setOnClickListener {
-                   Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show()
-               }
-           }
-       }
-
-         */
-
-
-        /*
-         dialogBinding?.filterRecyclerview?.layoutManager = LinearLayoutManager(requireContext())
-         dialogBinding?.filterRecyclerview?.adapter = dialogAdapter
-        */
-
         dialogBuilder.setView(dialogBinding?.root)
         dialog = dialogBuilder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -171,7 +176,8 @@ class FeedFragment : Fragment() {
 
 
     fun onItemClickListener(selectedPosition: Int) {
-        charAdapter.submitList(emptyList())
+        //charAdapter.submitList(emptyList())
+        viewModel.rvDataset.postValue(emptyList())
         viewModel.channel.trySend(Unit)
         viewModel.page = 0
 

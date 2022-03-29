@@ -31,6 +31,8 @@ class FeedViewModel @Inject constructor(private val repository: CharRepository) 
         get() = _charactersList
     val rvDataset = MutableLiveData<List<CharactersQuery.Result?>>()
 
+
+
     fun queryCharList() = viewModelScope.launch {
         _charactersList.postValue(State.ViewState.Loading())
         if (currentQuery == "") {
@@ -49,6 +51,8 @@ class FeedViewModel @Inject constructor(private val repository: CharRepository) 
                 val response = repository.queryCharList(page, currentQuery)
                 _charactersList.postValue(State.ViewState.Success(response))
                 page = response.data?.characters?.info?.next
+                rvDataset.postValue(response.data?.characters?.results!!)
+
 
             } catch (e: ApolloException) {
                 _charactersList.postValue(State.ViewState.Error("Error!"))
@@ -60,6 +64,8 @@ class FeedViewModel @Inject constructor(private val repository: CharRepository) 
                 val response = repository.queryCharList(page, currentQuery)
                 _charactersList.postValue(State.ViewState.Success(response))
                 page = response.data?.characters?.info?.next
+                rvDataset.postValue(response.data?.characters?.results!!)
+
 
             } catch (e: ApolloException) {
                 _charactersList.postValue(State.ViewState.Error("Error!"))

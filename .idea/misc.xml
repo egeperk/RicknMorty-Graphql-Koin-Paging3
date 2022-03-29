@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/button_style.xml" value="0.2265" />
         <entry key="app/src/main/res/drawable/dialog_style.xml" value="0.2455" />
         <entry key="app/src/main/res/font/roboto.xml" value="0.21302083333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35104166666666664" />
