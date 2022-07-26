@@ -1,6 +1,5 @@
 package com.egeperk.rickandmorty_final.view
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,119 +8,104 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.egeperk.rickandmorty_final.BR
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
 import com.egeperk.rickandmorty_final.databinding.FragmentFeedBinding
 import com.egeperk.rickandmorty_final.databinding.OptionRowBinding
 import com.egeperk.rickandmorty_final.model.Character
+import com.egeperk.rickandmorty_final.util.Constants.MORTY
+import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.text.FieldPosition
-import com.egeperk.rickandmorty_final.adapter.RecyclerViewBindings as RecyclerViewBindings1
+import kotlinx.coroutines.channels.Channel
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
 
     private lateinit var binding: FragmentFeedBinding
-    private val charAdapter by lazy { ItemAdapter() }
     private val viewModel by viewModels<FeedViewModel>()
     private lateinit var filterList: ArrayList<Character>
     private var selectedPosition = -1
 
-    //private val dialogAdapter by lazy { DialogAdapter(filterList, this) }
     private var dialogBinding: FilterOptionItemListBinding? = null
     private var opBinding: OptionRowBinding? = null
     private lateinit var dialogBuilder: AlertDialog.Builder
     private lateinit var dialog: AlertDialog
+    private var charAdapter: CharAdapter? = null
+    private var page = 0
+    private lateinit var channel: Channel<Unit>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentFeedBinding.inflate(inflater)
+        binding = FragmentFeedBinding.inflate(inflater, container, false).apply {
+
+
+            charAdapter = CharAdapter()
+            recyclerView.adapter = charAdapter
+
+
+            observeLiveData()
+
+            filterList = ArrayList<com.egeperk.rickandmorty_final.model.Character>()
+            filterList.add(Character("Rick", (R.drawable.ellipse1), false))
+            filterList.add(Character("Morty", (R.drawable.ellipse1), false))
+
+            filterBtn.setOnClickListener(View.OnClickListener {
+                createPopup()
+            })
+
+        }
         return binding.root
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.lifecycleOwner = this
 
-/*
-        binding.layoutId = R.layout.char_row
-        binding.dataset = viewModel
-
- */
-        binding.dataSet = viewModel
-        viewModel.queryCharList()
-
-        /*
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = charAdapter
-
-         */
-
-        /*
-        charAdapter.onEndOfListReached = {
-            viewModel.queryCharList()
-        }
-
-         */
-
-        binding.loadMore = object : RecyclerViewBindings1.OnLoadMoreListener {
-            override fun onLoadMore(listSize: Int) {
-                viewModel.queryCharList()
-            }
-        }
-
-        super.onViewCreated(view, savedInstanceState)
-        filterList = ArrayList<com.egeperk.rickandmorty_final.model.Character>()
-        filterList.add(Character("Rick", (R.drawable.ellipse1), false))
-        filterList.add(Character("Morty", (R.drawable.ellipse1), false))
-        //observeLiveData()
-
-        binding.filterBtn.setOnClickListener(View.OnClickListener {
-            createPopup()
-        })
-    }
-/*
     private fun observeLiveData() {
+
+
         viewModel.charactersList.observe(viewLifecycleOwner) { response ->
+
             when (response) {
                 is State.ViewState.Loading -> {
-                    //binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
                 is State.ViewState.Success -> {
                     if (response.value?.data?.characters?.results?.size == 0) {
                         charAdapter
-                            .submitList(emptyList())
+                            ?.submitList(emptyList())
                         binding.recyclerView.visibility = View.GONE
                         binding.progressBar.visibility = View.GONE
                     } else {
-                        //binding.progressBar.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.VISIBLE
                         binding.recyclerView.visibility = View.VISIBLE
                     }
                     val results = response.value?.data?.characters?.results
-                    results?.let { charAdapter.submitList(charAdapter.currentList.plus(it)) }
+
+
+                    results?.let {
+                        charAdapter?.submitList(it.toList())
+                    }
+
                     binding.progressBar.visibility = View.GONE
                 }
                 is State.ViewState.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    charAdapter.submitList(emptyList())
+                    charAdapter?.submitList(emptyList())
                     binding.recyclerView.visibility = View.GONE
                 }
             }
         }
-    }
- */
 
+    }
 
     private fun createPopup() {
 
@@ -130,70 +114,55 @@ class FeedFragment : Fragment() {
         dialogBinding = FilterOptionItemListBinding.inflate(layoutInflater)
         dialogBinding?.item = filterList
         opBinding = OptionRowBinding.inflate(layoutInflater)
+        val optionAdapter = OptionAdapter(object : OptionAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int) {
+                Toast.makeText(context, "$position", Toast.LENGTH_SHORT).show()
 
-        dialogBinding?.listener = object : RecyclerViewBindings1.OnItemClickListener {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onItemClick(index: Int) {
-                Toast.makeText(context, "$index", Toast.LENGTH_SHORT).show()
+                filterList[position].isSelected = !filterList[position].isSelected
 
-                filterList[index].isSelected = true
+                if (!filterList[0].isSelected && !filterList[1].isSelected) {
+                    viewModel.apply {
+                        charAdapter?.submitList(emptyList())
+                        charAdapter?.notifyDataSetChanged()
+                        queryCharList(page, "")
+                    }
+                }
 
-                if (index == 0){
+                if (position == 0 && filterList[0].isSelected) {
                     filterList[1].isSelected = false
-                    viewModel.channel.trySend(Unit)
-                    viewModel.page = 0
-                    viewModel.currentQuery = "Rick"
-                    viewModel.queryCharList()
-                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    viewModel.apply {
+                        charAdapter?.submitList(emptyList())
+                        charAdapter?.notifyDataSetChanged()
+                        queryCharList(page, RICK)
+                    }
                 }
-                if (index == 1){
+
+                if (position == 1 && filterList[1].isSelected) {
                     filterList[0].isSelected = false
-                    viewModel.rvDataset.postValue(emptyList())
-                    viewModel.channel.trySend(Unit)
-                    viewModel.page = 0
-                    viewModel.currentQuery = "Morty"
-                    viewModel.queryCharList()
+                    viewModel.apply {
+                        charAdapter?.submitList(emptyList())
+                        charAdapter?.notifyDataSetChanged()
+                        queryCharList(page, MORTY)
+                    }
                     binding.recyclerView.adapter?.notifyDataSetChanged()
                 }
 
-                if (index != selectedPosition) {
-                    selectedPosition = index
+                if (position != selectedPosition) {
+                    selectedPosition = position
                     dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
                 } else {
                     selectedPosition = -1
                     dialogBinding?.filterRecyclerview?.adapter?.notifyDataSetChanged()
                 }
-
-
-
             }
-        }
+
+        })
+        dialogBinding?.filterRecyclerview?.adapter = optionAdapter
+        optionAdapter.submitList(filterList)
+
         dialogBuilder.setView(dialogBinding?.root)
         dialog = dialogBuilder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }
-
-
-    fun onItemClickListener(selectedPosition: Int) {
-        //charAdapter.submitList(emptyList())
-        viewModel.rvDataset.postValue(emptyList())
-        viewModel.channel.trySend(Unit)
-        viewModel.page = 0
-
-        if (selectedPosition == 0) {
-            viewModel.currentQuery = "Rick"
-            viewModel.queryCharList()
-        }
-        if (selectedPosition == 1) {
-            viewModel.currentQuery = "Morty"
-            viewModel.queryCharList()
-        }
-        if (selectedPosition == 2) {
-            viewModel.currentQuery = ""
-            viewModel.queryCharList()
-        }
-
-    }
-
 }

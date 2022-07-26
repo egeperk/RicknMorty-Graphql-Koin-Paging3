@@ -2,15 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <data>
-    <variable
-        name="dataSet"
-        type="com.egeperk.rickandmorty_final.viewmodel.FeedViewModel" />
-    <variable
-        name="loadMore"
-        type="com.egeperk.rickandmorty_final.adapter.RecyclerViewBindings.OnLoadMoreListener" />
-
-
-
 
 </data>
 
@@ -44,18 +35,24 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            app:layout ="@{@layout/char_row}"
-            app:entries="@{dataSet.rvDataset}"
-            app:onLoadMore="@{loadMore}"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="24dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_header_tv" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 
 

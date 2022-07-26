@@ -1,14 +1,13 @@
 package com.egeperk.rickandmorty_final.viewmodel
 
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
-import com.egeperk.rickandmorty_final.BR
+import com.egeperk.rickandmorty_final.model.Character
 import com.egeperk.rickandmorty_final.repo.CharRepository
 import com.egeperk.rickandmorty_final.view.State
 import com.example.rnm_mvvm.CharactersQuery
@@ -22,55 +21,35 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(private val repository: CharRepository) : ViewModel() {
 
+    private var dataPage = 0
+    private var currentQuery = ""
     val channel = Channel<Unit>(Channel.CONFLATED)
-    var page: Int? = 0
-    var currentQuery = ""
+
 
     private val _charactersList by lazy { MutableLiveData<State.ViewState<ApolloResponse<CharactersQuery.Data>>>() }
     val charactersList: LiveData<State.ViewState<ApolloResponse<CharactersQuery.Data>>>
         get() = _charactersList
-    val rvDataset = MutableLiveData<List<CharactersQuery.Result?>>()
+
+    val characters = mutableListOf<CharactersQuery.Result>()
 
 
+    init {
+        queryCharList(dataPage, currentQuery)
+    }
 
-    fun queryCharList() = viewModelScope.launch {
+    fun queryCharList(page: Int? = 0, query: String) = viewModelScope.launch {
         _charactersList.postValue(State.ViewState.Loading())
-        if (currentQuery == "") {
-            try {
-                val response = repository.queryCharList(page, currentQuery)
-                _charactersList.postValue(State.ViewState.Success(response))
-                page = response.data?.characters?.info?.next
-                rvDataset.postValue(response.data?.characters?.results!!)
-            } catch (e: ApolloException) {
-                _charactersList.postValue(State.ViewState.Error("Error!"))
-            }
-        }
-        if (currentQuery == "Rick") {
-            try {
-                currentQuery = "Rick"
-                val response = repository.queryCharList(page, currentQuery)
-                _charactersList.postValue(State.ViewState.Success(response))
-                page = response.data?.characters?.info?.next
-                rvDataset.postValue(response.data?.characters?.results!!)
 
+            try {
+                val response = repository.queryCharList(page, query)
+                _charactersList.postValue(State.ViewState.Success(response))
 
             } catch (e: ApolloException) {
                 _charactersList.postValue(State.ViewState.Error("Error!"))
             }
-        }
-        if (currentQuery == "Morty") {
-            try {
-                currentQuery = "Morty"
-                val response = repository.queryCharList(page, currentQuery)
-                _charactersList.postValue(State.ViewState.Success(response))
-                page = response.data?.characters?.info?.next
-                rvDataset.postValue(response.data?.characters?.results!!)
 
 
-            } catch (e: ApolloException) {
-                _charactersList.postValue(State.ViewState.Error("Error!"))
-            }
-        }
+
     }
 
     override fun onCleared() {
