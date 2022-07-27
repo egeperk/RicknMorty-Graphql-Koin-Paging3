@@ -12,7 +12,6 @@ class CharacterRepositoryImpl @Inject constructor(private val service: BaseApi) 
         page: Int?,
         query: String?
     ): ApolloResponse<CharactersQuery.Data> {
-      return service.getApolloClient()
-            .query(CharactersQuery(Optional.Present(page), Optional.Present(query))).execute()
+      return service.apolloClient.query(CharactersQuery(Optional.Present(page), Optional.Present(query))).execute()
           }
 }

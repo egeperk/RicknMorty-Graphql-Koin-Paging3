@@ -8,11 +8,13 @@ import okhttp3.OkHttpClient
 
 class BaseApi {
 
-    fun getApolloClient(): ApolloClient {
+  /*  fun getApolloClient(): ApolloClient {
         check(Looper.myLooper() == Looper.getMainLooper()) {
         }
         val okHttpApiClient = OkHttpClient.Builder().build()
         return ApolloClient.Builder().serverUrl(SERVER_URL)
             .okHttpClient(okHttpApiClient).build()
-    }
+    }*/
+
+    val apolloClient = ApolloClient.Builder().serverUrl(SERVER_URL).build()
 }

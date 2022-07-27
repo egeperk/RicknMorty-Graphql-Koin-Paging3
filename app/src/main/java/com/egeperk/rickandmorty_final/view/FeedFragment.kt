@@ -8,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.egeperk.rickandmorty_final.BaseApi
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
@@ -21,9 +25,12 @@ import com.egeperk.rickandmorty_final.model.Character
 import com.egeperk.rickandmorty_final.util.Constants.MORTY
 import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
+import com.example.rnm_mvvm.CharactersQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -38,7 +45,7 @@ class FeedFragment : Fragment() {
     private var opBinding: OptionRowBinding? = null
     private lateinit var dialogBuilder: AlertDialog.Builder
     private lateinit var dialog: AlertDialog
-    private var charAdapter: CharAdapter? = null
+    private var charAdapter: PagedAdapter? = null
     private var page = 0
     private lateinit var channel: Channel<Unit>
 
@@ -49,27 +56,54 @@ class FeedFragment : Fragment() {
         binding = FragmentFeedBinding.inflate(inflater, container, false).apply {
 
 
-            charAdapter = CharAdapter()
-            recyclerView.adapter = charAdapter
-
-
-            observeLiveData()
-
-            filterList = ArrayList<com.egeperk.rickandmorty_final.model.Character>()
-            filterList.add(Character("Rick", (R.drawable.ellipse1), false))
-            filterList.add(Character("Morty", (R.drawable.ellipse1), false))
-
-            filterBtn.setOnClickListener(View.OnClickListener {
-                createPopup()
-            })
 
         }
         return binding.root
 
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    private fun observeLiveData() {
+        charAdapter = PagedAdapter()
+        binding.recyclerView.adapter = charAdapter?.withLoadStateFooter(
+            footer = ItemLoadStateAdapter()
+        )
+
+
+        observeLoadState()
+        //observeLiveData()
+        observeData()
+
+        filterList = ArrayList<com.egeperk.rickandmorty_final.model.Character>()
+        filterList.add(Character("Rick", (R.drawable.ellipse1), false))
+        filterList.add(Character("Morty", (R.drawable.ellipse1), false))
+
+        binding.filterBtn.setOnClickListener(View.OnClickListener {
+            createPopup()
+        })
+
+    }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            viewModel.getData().collectLatest {
+                charAdapter?.submitData(it)
+            }
+        }
+    }
+
+    private fun observeLoadState() {
+        charAdapter?.addLoadStateListener { loadState ->
+            binding.progressBar.isVisible = loadState.refresh is LoadState.Loading
+
+            if (loadState.refresh is LoadState.Error) {
+                binding.progressBar.isVisible = true
+            }
+        }
+    }
+
+   /* private fun observeLiveData() {
 
 
         viewModel.charactersList.observe(viewLifecycleOwner) { response ->
@@ -90,10 +124,13 @@ class FeedFragment : Fragment() {
                     }
                     val results = response.value?.data?.characters?.results
 
-
                     results?.let {
-                        charAdapter?.submitList(it.toList())
+                        charAdapter?.submitList(viewModel.characters)
+                        page = response.value.data?.characters?.info?.next!!
                     }
+
+
+
 
                     binding.progressBar.visibility = View.GONE
                 }
@@ -105,7 +142,7 @@ class FeedFragment : Fragment() {
             }
         }
 
-    }
+    }*/
 
     private fun createPopup() {
 
@@ -122,27 +159,27 @@ class FeedFragment : Fragment() {
 
                 if (!filterList[0].isSelected && !filterList[1].isSelected) {
                     viewModel.apply {
-                        charAdapter?.submitList(emptyList())
-                        charAdapter?.notifyDataSetChanged()
-                        queryCharList(page, "")
+                        //charAdapter?.submitList(emptyList())
+                        //charAdapter?.notifyDataSetChanged()
+                        //queryCharList(page, "")
                     }
                 }
 
                 if (position == 0 && filterList[0].isSelected) {
                     filterList[1].isSelected = false
                     viewModel.apply {
-                        charAdapter?.submitList(emptyList())
-                        charAdapter?.notifyDataSetChanged()
-                        queryCharList(page, RICK)
+                        //charAdapter?.submitList(emptyList())
+                        //charAdapter?.notifyDataSetChanged()
+                        //queryCharList(page, RICK)
                     }
                 }
 
                 if (position == 1 && filterList[1].isSelected) {
                     filterList[0].isSelected = false
                     viewModel.apply {
-                        charAdapter?.submitList(emptyList())
-                        charAdapter?.notifyDataSetChanged()
-                        queryCharList(page, MORTY)
+                        //charAdapter?.submitList(emptyList())
+                        //charAdapter?.notifyDataSetChanged()
+                        //queryCharList(page, MORTY)
                     }
                     binding.recyclerView.adapter?.notifyDataSetChanged()
                 }

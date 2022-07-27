@@ -29,7 +29,6 @@ class CharAdapter() : BaseAdapter<CharactersQuery.Result>(DiffCallback()) {
         super.onBindViewHolder(holder, position)
         holder.itemView.setOnClickListener {
             Toast.makeText(it.context, "$position", Toast.LENGTH_SHORT).show()
-
         }
     }
 }
