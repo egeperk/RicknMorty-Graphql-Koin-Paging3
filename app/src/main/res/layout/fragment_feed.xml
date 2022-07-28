@@ -9,32 +9,65 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
         <TextView
+            style="@style/Typography.Bold.Title.24"
             android:id="@+id/main_header_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:fontFamily="@font/roboto"
             android:text="@string/main_header"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/filter_btn"
-            android:layout_width="23dp"
-            android:layout_height="26dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginRight="24dp"
-            android:src="@drawable/polygon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:padding="24dp"
+            android:src="@drawable/ic_group_filter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_duration="700"
+            android:id="@+id/shimmer_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_header_tv">
+
+            <ScrollView
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@id/main_header_tv"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/char_row_shimmer"/>
+                <include layout="@layout/char_row_shimmer"/>
+                <include layout="@layout/char_row_shimmer"/>
+                <include layout="@layout/char_row_shimmer"/>
+                <include layout="@layout/char_row_shimmer"/>
+
+            </LinearLayout>
+            </ScrollView>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:overScrollMode="never"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -43,18 +76,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_header_tv" />
+            app:layout_constraintTop_toBottomOf="@+id/main_header_tv"
+            android:visibility="gone"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <include
+            android:id="@+id/loading_ly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/item_loading"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

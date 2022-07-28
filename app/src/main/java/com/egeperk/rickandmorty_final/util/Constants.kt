@@ -5,4 +5,7 @@ object Constants {
     const val SERVER_URL = "https://rickandmortyapi.com/graphql"
     const val MORTY = "Morty"
     const val RICK = "Rick"
+    const val EMPTY = ""
+    const val SELECTED_POSITION = -1
+
 }

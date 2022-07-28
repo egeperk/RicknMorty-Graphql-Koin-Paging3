@@ -8,26 +8,48 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp"
+        android:layout_marginBottom="36dp">
 
         <ProgressBar
+            android:layout_marginTop="8dp"
             android:id="@+id/progress_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminateTint="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/error_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:visibility="invisible"/>
+
         <TextView
             android:textColor="@color/black"
+            android:layout_marginHorizontal="24dp"
             android:id="@+id/error_text"
-            android:textSize="24sp"
-            android:text="Error!"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:text="@string/no_internet_connection"
+            android:textAlignment="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
+        <Button
+            android:layout_marginTop="8dp"
+            android:id="@+id/load_state_retry"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_loading"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/white"
+            android:text="@string/retry"
+            android:textColor="@color/black"
+            android:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

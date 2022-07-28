@@ -1,6 +1,6 @@
 package com.egeperk.rickandmorty_final.di
 
-import com.egeperk.rickandmorty_final.BaseApi
+import com.egeperk.rickandmorty_final.repo.BaseApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
