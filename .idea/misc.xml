@@ -4,15 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/button_style.xml" value="0.2265" />
+        <entry key="app/src/main/res/drawable/day_night_selector.xml" value="0.2235" />
         <entry key="app/src/main/res/drawable/dialog_style.xml" value="0.2455" />
+        <entry key="app/src/main/res/drawable/ic_baseline_nights_stay_24.xml" value="0.2235" />
+        <entry key="app/src/main/res/drawable/ic_baseline_wb_sunny_24.xml" value="0.2235" />
+        <entry key="app/src/main/res/drawable/ic_day_night.xml" value="0.2235" />
         <entry key="app/src/main/res/drawable/ic_group_4.xml" value="0.2235" />
+        <entry key="app/src/main/res/drawable/ic_group_filter.xml" value="0.2235" />
         <entry key="app/src/main/res/drawable/style.xml" value="0.2235" />
         <entry key="app/src/main/res/font/roboto.xml" value="0.21302083333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/layout/char_row.xml" value="0.33697916666666666" />
         <entry key="app/src/main/res/layout/char_row_shimmer.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/filter_option_item_list.xml" value="0.35104166666666664" />
-        <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.1404625503925313" />
+        <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_loading.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/layout/option_row.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/layout/test_row.xml" value="0.35104166666666664" />

@@ -8,12 +8,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
 import com.egeperk.rickandmorty_final.databinding.FragmentFeedBinding
@@ -23,10 +25,10 @@ import com.egeperk.rickandmorty_final.util.Constants.EMPTY
 import com.egeperk.rickandmorty_final.util.Constants.MORTY
 import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
+import com.egeperk.rickandmorty_final.util.ThemePreferences
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,6 +52,8 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkPreferences()
+
         charAdapter = PagedAdapter()
         binding.recyclerView.adapter = charAdapter?.withLoadStateFooter(
             footer = ItemLoadStateAdapter { charAdapter?.retry() }
@@ -64,12 +68,14 @@ class FeedFragment : Fragment() {
         binding.filterBtn.setOnClickListener {
             createPopup()
         }
+        binding.themeBtn.setOnClickListener {
+            setMode()
+        }
 
     }
 
     private fun observeData() {
         lifecycleScope.launch {
-            delay(2000)
             binding.recyclerView.isVisible = true
             viewModel.getData(EMPTY).collectLatest {
                 charAdapter?.submitData(it)
@@ -78,15 +84,16 @@ class FeedFragment : Fragment() {
     }
 
     private fun observeLoadState() {
+
         charAdapter?.addLoadStateListener { loadState ->
 
             if (loadState.refresh is LoadState.Error) {
                 binding.loadingLy.errorText.isVisible = true
                 binding.loadingLy.loadStateRetry.isVisible = true
-                binding.shimmerView.isVisible = false
+                //binding.shimmerView.isVisible = false
             }
             binding.loadingLy.loadStateRetry.setOnClickListener {
-                binding.shimmerView.isVisible = true
+                //binding.shimmerView.isVisible = true
                 charAdapter?.retry()
             }
             if (loadState.refresh !is LoadState.Error) {
@@ -96,10 +103,10 @@ class FeedFragment : Fragment() {
                 }
             }
             if (loadState.refresh !is LoadState.Error && loadState.refresh !is LoadState.Loading) {
-                binding.shimmerView.apply {
+                /*binding.shimmerView.apply {
                     isVisible = false
                     stopShimmer()
-                }
+                }*/
             }
         }
     }
@@ -169,6 +176,34 @@ class FeedFragment : Fragment() {
         dialogBinding.filterRecyclerview.adapter = filterAdapter.apply {
             lifecycleScope.launch {
                 submitData(PagingData.from(filterList))
+            }
+        }
+
+    }
+
+    private fun setMode() {
+        if (!binding.themeBtn.isActivated) {
+            binding.themeBtn.isActivated = true
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            ThemePreferences(requireContext()).darkMode = 1
+            (activity as MainActivity?)?.delegate?.applyDayNight()
+        } else {
+            binding.themeBtn.isActivated = false
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            ThemePreferences(requireContext()).darkMode = 0
+            (activity as MainActivity?)?.delegate?.applyDayNight()
+        }
+    }
+
+    private fun checkPreferences(){
+        when(ThemePreferences(requireContext()).darkMode){
+            0 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                (activity as MainActivity?)?.delegate?.applyDayNight()
+            }
+            1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                (activity as MainActivity?)?.delegate?.applyDayNight()
             }
         }
     }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 <data>
 
 </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="?attr/colorOnPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-
         <TextView
+            android:textColor="?attr/colorOnSecondary"
             style="@style/Typography.Bold.Title.24"
             android:id="@+id/main_header_tv"
             android:layout_width="wrap_content"
@@ -32,39 +34,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            app:shimmer_repeat_mode="restart"
-            app:shimmer_duration="700"
-            android:id="@+id/shimmer_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <ImageView
+            android:id="@+id/theme_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="14dp"
+            android:src="@drawable/ic_day_night"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_header_tv">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ScrollView
-                android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@id/main_header_tv"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include layout="@layout/char_row_shimmer"/>
-                <include layout="@layout/char_row_shimmer"/>
-                <include layout="@layout/char_row_shimmer"/>
-                <include layout="@layout/char_row_shimmer"/>
-                <include layout="@layout/char_row_shimmer"/>
-
-            </LinearLayout>
-            </ScrollView>
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:overScrollMode="never"
@@ -77,7 +57,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_header_tv"
-            android:visibility="gone"/>
+            android:visibility="visible"
+            tools:listitem="@layout/char_row"/>
 
         <include
             android:id="@+id/loading_ly"

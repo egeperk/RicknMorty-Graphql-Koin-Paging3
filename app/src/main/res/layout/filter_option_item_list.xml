@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-
+            app:cardBackgroundColor="?attr/colorOnTertiary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:textColor="?attr/colorOnSecondary"
                     android:id="@+id/pop_up_header_tv"
                     style="@style/Typography.Bold.Title.24"
                     android:layout_width="wrap_content"
