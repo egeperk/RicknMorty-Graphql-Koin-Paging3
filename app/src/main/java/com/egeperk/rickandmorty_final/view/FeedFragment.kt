@@ -83,8 +83,10 @@ class FeedFragment : Fragment() {
             if (loadState.refresh is LoadState.Error) {
                 binding.loadingLy.errorText.isVisible = true
                 binding.loadingLy.loadStateRetry.isVisible = true
+                binding.shimmerView.isVisible = false
             }
             binding.loadingLy.loadStateRetry.setOnClickListener {
+                binding.shimmerView.isVisible = true
                 charAdapter?.retry()
             }
             if (loadState.refresh !is LoadState.Error) {
