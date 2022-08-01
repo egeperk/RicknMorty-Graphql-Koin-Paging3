@@ -16,13 +16,16 @@ class ItemLoadStateAdapter(private val retry: () -> Unit) :
 
     override fun onBindViewHolder(holder: LoadStateViewHolder, loadState: LoadState) {
         holder.binding.apply {
-            loadStateRetry.isVisible = loadState !is LoadState.Loading
+            //loadStateRetry.isVisible = loadState !is LoadState.Loading
             errorText.isVisible = loadState !is LoadState.Loading
             progressLoading.isVisible = loadState is LoadState.Loading
         }
         if (loadState is LoadState.Error) {
-            holder.binding.errorText.isVisible = true
-            holder.binding.errorText.text = loadState.error.localizedMessage
+            holder.binding.apply {
+                errorText.isVisible = true
+                errorText.text = loadState.error.localizedMessage
+                loadStateRetry.isVisible = true
+            }
         }
         holder.binding.loadStateRetry.setOnClickListener {
             retry.invoke()

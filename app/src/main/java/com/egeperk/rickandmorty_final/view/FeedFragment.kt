@@ -8,10 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -35,7 +34,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class FeedFragment : Fragment() {
 
     private lateinit var binding: FragmentFeedBinding
-    private val viewModel by viewModel<FeedViewModel>()
+    private val charViewModel by viewModel<FeedViewModel>()
     private lateinit var filterList: ArrayList<Character>
     private var charAdapter: PagedAdapter? = null
 
@@ -43,7 +42,10 @@ class FeedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentFeedBinding.inflate(inflater, container, false)
+        binding = FragmentFeedBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = charViewModel
+        }
         return binding.root
     }
 
@@ -58,7 +60,7 @@ class FeedFragment : Fragment() {
         )
         binding.recyclerView.setHasFixedSize(true)
 
-        observeLoadState()
+        //observeLoadState()
         observeData()
 
         filterList = CharacterProvider.provideCharacter()
@@ -69,21 +71,21 @@ class FeedFragment : Fragment() {
         binding.themeBtn.setOnClickListener {
             setMode()
         }
-        binding.searchEt.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH){
-                searchItem()
-                return@setOnEditorActionListener true
-            }
-            false
+
+        binding.searchEt.doOnTextChanged { _, _, _, _ ->
+            searchItem()
         }
+
+
     }
 
     private fun observeData() {
         lifecycleScope.launch {
             binding.recyclerView.isVisible = true
-            viewModel.getData(EMPTY).collectLatest {
+            charViewModel.getData(EMPTY).collectLatest {
                 charAdapter?.submitData(it)
             }
+
         }
     }
 
@@ -91,24 +93,22 @@ class FeedFragment : Fragment() {
 
         charAdapter?.addLoadStateListener { loadState ->
 
+            if (loadState.append.endOfPaginationReached) {
+                binding.searchErrorText.apply {
+                    isVisible = true
+                }
+            }
             if (loadState.refresh is LoadState.Error) {
                 binding.loadingLy.errorText.isVisible = true
                 binding.loadingLy.loadStateRetry.isVisible = true
-            }
-            binding.loadingLy.loadStateRetry.setOnClickListener {
-                charAdapter?.retry()
-            }
-            if (loadState.refresh !is LoadState.Error) {
+            } else {
                 binding.loadingLy.apply {
                     loadStateRetry.isVisible = false
                     errorText.isVisible = false
                 }
             }
-            if (loadState.refresh !is LoadState.Error && loadState.refresh !is LoadState.Loading) {
-                /*binding.shimmerView.apply {
-                    isVisible = false
-                    stopShimmer()
-                }*/
+            binding.loadingLy.loadStateRetry.setOnClickListener {
+                charAdapter?.retry()
             }
         }
     }
@@ -121,7 +121,7 @@ class FeedFragment : Fragment() {
             }
         AlertDialog.Builder(context).setView(dialogBinding.root).create().apply {
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                show()
+            show()
         }
         var selectedPosition = SELECTED_POSITION
 
@@ -133,7 +133,7 @@ class FeedFragment : Fragment() {
 
                 if (!filterList[0].isSelected && !filterList[1].isSelected) {
                     lifecycleScope.launch {
-                        viewModel.getData("").collectLatest {
+                        charViewModel.getData("").collectLatest {
                             charAdapter?.apply {
                                 submitData(PagingData.empty())
                                 submitData(it)
@@ -145,7 +145,7 @@ class FeedFragment : Fragment() {
                 if (position == 0 && filterList[0].isSelected) {
                     filterList[1].isSelected = false
                     lifecycleScope.launch {
-                        viewModel.getData(RICK).collectLatest {
+                        charViewModel.getData(RICK).collectLatest {
                             charAdapter?.apply {
                                 submitData(PagingData.empty())
                                 submitData(it)
@@ -157,7 +157,7 @@ class FeedFragment : Fragment() {
                 if (position == 1 && filterList[1].isSelected) {
                     filterList[0].isSelected = false
                     lifecycleScope.launch {
-                        viewModel.getData(MORTY).collectLatest {
+                        charViewModel.getData(MORTY).collectLatest {
                             charAdapter?.apply {
                                 submitData(PagingData.empty())
                                 submitData(it)
@@ -197,8 +197,8 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun checkPreferences(){
-        when(ThemePreferences(requireContext()).darkMode){
+    private fun checkPreferences() {
+        when (ThemePreferences(requireContext()).darkMode) {
             0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 (activity as MainActivity?)?.delegate?.applyDayNight()
@@ -209,12 +209,22 @@ class FeedFragment : Fragment() {
             }
         }
     }
-    private fun searchItem(){
-        lifecycleScope.launch {
-            viewModel.getData(binding.searchEt.text.toString()).collectLatest {
-                charAdapter?.submitData(it)
-            }
 
+    private fun searchItem() {
+        charViewModel.search.observe(viewLifecycleOwner) { text ->
+            lifecycleScope.launch {
+                charViewModel.getData(text).collectLatest {
+                    charAdapter?.submitData(PagingData.from(emptyList()))
+                    charAdapter?.submitData(it)
+                    if (text == EMPTY) {
+                        charAdapter?.submitData(PagingData.from(emptyList()))
+                        charAdapter?.submitData(it)
+                    }
+                }
+
+            }
         }
+
+
     }
 }

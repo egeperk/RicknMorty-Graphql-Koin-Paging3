@@ -3,6 +3,7 @@ package com.egeperk.rickandmorty_final.adapter
 import android.os.Handler
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DiffUtil
 import com.egeperk.rickandmorty_final.R
 import com.example.rnm_mvvm.CharactersQuery

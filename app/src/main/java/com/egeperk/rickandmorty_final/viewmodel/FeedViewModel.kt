@@ -1,5 +1,6 @@
 package com.egeperk.rickandmorty_final.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -12,6 +13,8 @@ import com.example.rnm_mvvm.CharactersQuery
 import kotlinx.coroutines.flow.Flow
 
 class FeedViewModel (private val repository: CharRepository) : ViewModel() {
+
+    val search = MutableLiveData<String>()
 
     private var currentResult: Flow<PagingData<CharactersQuery.Result>>? = null
 
