@@ -2,13 +2,9 @@ package com.egeperk.rickandmorty_final.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import java.util.prefs.Preferences
+import com.egeperk.rickandmorty_final.util.Constants.DARK_THEME
 
 class ThemePreferences(context: Context) {
-
-    companion object {
-        const val DARK_THEME = "dark.theme"
-    }
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 

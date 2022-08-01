@@ -8,14 +8,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
 import com.egeperk.rickandmorty_final.databinding.FragmentFeedBinding
@@ -27,17 +27,15 @@ import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
 import com.egeperk.rickandmorty_final.util.ThemePreferences
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalCoroutinesApi
-@AndroidEntryPoint
+
 class FeedFragment : Fragment() {
 
     private lateinit var binding: FragmentFeedBinding
-    private val viewModel by viewModels<FeedViewModel>()
+    private val viewModel by viewModel<FeedViewModel>()
     private lateinit var filterList: ArrayList<Character>
     private var charAdapter: PagedAdapter? = null
 
@@ -71,7 +69,13 @@ class FeedFragment : Fragment() {
         binding.themeBtn.setOnClickListener {
             setMode()
         }
-
+        binding.searchEt.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                searchItem()
+                return@setOnEditorActionListener true
+            }
+            false
+        }
     }
 
     private fun observeData() {
@@ -90,10 +94,8 @@ class FeedFragment : Fragment() {
             if (loadState.refresh is LoadState.Error) {
                 binding.loadingLy.errorText.isVisible = true
                 binding.loadingLy.loadStateRetry.isVisible = true
-                //binding.shimmerView.isVisible = false
             }
             binding.loadingLy.loadStateRetry.setOnClickListener {
-                //binding.shimmerView.isVisible = true
                 charAdapter?.retry()
             }
             if (loadState.refresh !is LoadState.Error) {
@@ -205,6 +207,14 @@ class FeedFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 (activity as MainActivity?)?.delegate?.applyDayNight()
             }
+        }
+    }
+    private fun searchItem(){
+        lifecycleScope.launch {
+            viewModel.getData(binding.searchEt.text.toString()).collectLatest {
+                charAdapter?.submitData(it)
+            }
+
         }
     }
 }

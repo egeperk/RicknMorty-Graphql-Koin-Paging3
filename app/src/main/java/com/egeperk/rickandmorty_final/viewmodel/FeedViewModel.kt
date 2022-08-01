@@ -9,14 +9,9 @@ import androidx.paging.cachedIn
 import com.egeperk.rickandmorty_final.adapter.ItemPagingSource
 import com.egeperk.rickandmorty_final.repo.CharRepository
 import com.example.rnm_mvvm.CharactersQuery
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-@HiltViewModel
-class FeedViewModel @Inject constructor(private val repository: CharRepository) : ViewModel() {
+class FeedViewModel (private val repository: CharRepository) : ViewModel() {
 
     private var currentResult: Flow<PagingData<CharactersQuery.Result>>? = null
 

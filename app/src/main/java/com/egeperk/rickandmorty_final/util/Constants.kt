@@ -7,5 +7,7 @@ object Constants {
     const val RICK = "Rick"
     const val EMPTY = ""
     const val SELECTED_POSITION = -1
+    const val DARK_THEME = "dark.theme"
+
 
 }

@@ -44,19 +44,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
+        <EditText
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:drawableTint="@color/drawable_gray"
+            android:textColorHint="@color/drawable_gray"
+            android:drawablePadding="4dp"
+            android:elevation="10dp"
+            android:background="@drawable/custom_et_background"
+            android:id="@+id/search_et"
+            android:hint="@string/search"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toBottomOf="@+id/main_header_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:overScrollMode="never"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_header_tv"
+            app:layout_constraintTop_toBottomOf="@+id/search_et"
             android:visibility="visible"
             tools:listitem="@layout/char_row"/>
 

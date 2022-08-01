@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="shimmerColor">#C2C2C2</color>
     <color name="dark_gray">#232222</color>
+    <color name="drawable_gray">#C4C4C4</color>
 </resources>

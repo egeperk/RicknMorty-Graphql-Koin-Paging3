@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/button_style.xml" value="0.2265" />
+        <entry key="app/src/main/res/drawable/custom_et_background.xml" value="0.2235" />
         <entry key="app/src/main/res/drawable/day_night_selector.xml" value="0.2235" />
         <entry key="app/src/main/res/drawable/dialog_style.xml" value="0.2455" />
         <entry key="app/src/main/res/drawable/ic_baseline_nights_stay_24.xml" value="0.2235" />
