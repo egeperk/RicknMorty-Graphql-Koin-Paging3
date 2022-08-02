@@ -11,6 +11,7 @@ import com.egeperk.rickandmorty_final.adapter.ItemPagingSource
 import com.egeperk.rickandmorty_final.repo.CharRepository
 import com.example.rnm_mvvm.CharactersQuery
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 class FeedViewModel (private val repository: CharRepository) : ViewModel() {
 
@@ -23,7 +24,6 @@ class FeedViewModel (private val repository: CharRepository) : ViewModel() {
             ItemPagingSource(repository, query)
         }.flow.cachedIn(viewModelScope)
         currentResult = newResult
-
         return newResult
     }
 

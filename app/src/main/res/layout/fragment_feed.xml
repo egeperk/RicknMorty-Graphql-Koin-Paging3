@@ -93,12 +93,32 @@
             app:layout_constraintTop_toBottomOf="@+id/search_et"
             />
 
-        <include
-            android:id="@+id/loading_ly"
-            layout="@layout/item_loading"
-            android:layout_width="match_parent"
+      <TextView
+          android:textColor="?attr/colorOnSecondary"
+          style="@style/Typography.Bold.Subtitle.16"
+          android:id="@+id/no_connection_tv"
+          android:layout_width="0dp"
+          android:textAlignment="center"
+          android:paddingHorizontal="24dp"
+          android:layout_height="wrap_content"
+          android:text="@string/you_don_t_have_internet_connection"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          android:visibility="invisible"/>
+
+        <Button
+            android:layout_marginTop="12dp"
+            android:id="@+id/load_state_retry"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_connection_tv"
+            android:backgroundTint="?attr/colorOnTertiary"
+            android:text="@string/retry"
+            android:textColor="?attr/colorOnSecondary"
+            android:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
