@@ -1,4 +1,4 @@
-package com.egeperk.rickandmorty_final.view
+package com.egeperk.rickandmorty_final.view.feed
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import com.egeperk.rickandmorty_final.adapter.*
+import com.egeperk.rickandmorty_final.adapter.pagingadapter.FilterAdapter
+import com.egeperk.rickandmorty_final.adapter.pagingadapter.CharacterAdapter
 import com.egeperk.rickandmorty_final.databinding.FilterOptionItemListBinding
 import com.egeperk.rickandmorty_final.databinding.FragmentFeedBinding
 import com.egeperk.rickandmorty_final.model.Character
@@ -41,7 +43,7 @@ class FeedFragment : Fragment() {
     private lateinit var binding: FragmentFeedBinding
     private val charViewModel by viewModel<FeedViewModel>()
     private lateinit var filterList: ArrayList<Character>
-    private var charAdapter: PagedAdapter? = null
+    private var charAdapter: CharacterAdapter? = null
 
 
     override fun onCreateView(
@@ -60,7 +62,7 @@ class FeedFragment : Fragment() {
 
         checkPreferences()
 
-        charAdapter = PagedAdapter()
+        charAdapter = CharacterAdapter()
 
         observeData()
 

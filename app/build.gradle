@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id("com.apollographql.apollo3").version("3.1.0")
     id 'kotlin-kapt'
-
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -73,6 +73,9 @@ dependencies {
     //Koin
     implementation "io.insert-koin:koin-android:3.2.0"
 
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.1"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.1"
 
 }
 

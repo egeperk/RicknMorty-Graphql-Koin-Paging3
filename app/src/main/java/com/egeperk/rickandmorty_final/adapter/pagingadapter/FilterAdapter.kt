@@ -1,10 +1,11 @@
-package com.egeperk.rickandmorty_final.adapter
+package com.egeperk.rickandmorty_final.adapter.pagingadapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.model.Character
 
-class FilterAdapter(private val onItemClickListener: OnItemClickListener): GenericPagingAdapter<Character>(DiffItem()) {
+class FilterAdapter(private val onItemClickListener: OnItemClickListener): GenericPagingAdapter<Character>(
+    DiffItem()) {
 
     override fun onBindViewHolder(holder: GenericViewHolder<Character>, position: Int) {
         super.onBindViewHolder(holder, position)

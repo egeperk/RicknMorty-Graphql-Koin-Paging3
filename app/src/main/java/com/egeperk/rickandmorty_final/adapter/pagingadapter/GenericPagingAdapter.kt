@@ -1,4 +1,4 @@
-package com.egeperk.rickandmorty_final.adapter
+package com.egeperk.rickandmorty_final.adapter.pagingadapter
 
 
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rickandmorty_final.BR
 
-abstract class GenericPagingAdapter<T : Any>(diffCallback: DiffUtil.ItemCallback<T>): PagingDataAdapter<T,GenericPagingAdapter.GenericViewHolder<T>>(diffCallback) {
+abstract class GenericPagingAdapter<T : Any>(diffCallback: DiffUtil.ItemCallback<T>): PagingDataAdapter<T, GenericPagingAdapter.GenericViewHolder<T>>(diffCallback) {
 
     override fun onBindViewHolder(holder: GenericViewHolder<T>, position: Int) {
         holder.bind(getItem(position))

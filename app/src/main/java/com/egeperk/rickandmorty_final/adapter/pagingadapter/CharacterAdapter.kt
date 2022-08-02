@@ -1,16 +1,14 @@
-package com.egeperk.rickandmorty_final.adapter
+package com.egeperk.rickandmorty_final.adapter.pagingadapter
 
 import android.os.Handler
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.DiffUtil
 import com.egeperk.rickandmorty_final.R
 import com.example.rnm_mvvm.CharactersQuery
 import com.facebook.shimmer.ShimmerFrameLayout
-import kotlinx.coroutines.*
 
-class PagedAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem()) {
+class CharacterAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem()) {
 
     override fun onBindViewHolder(
         holder: GenericViewHolder<CharactersQuery.Result>,

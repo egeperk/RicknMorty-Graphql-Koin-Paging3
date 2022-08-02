@@ -4,10 +4,15 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.rnm_mvvm.CharactersQuery
+import com.example.rnm_mvvm.EpisodesQuery
 
-class CharRepository(private val api: ApolloClient) {
+class ApiRepository(private val api: ApolloClient) {
 
     suspend fun queryCharList(page: Int?, query : String?): ApolloResponse<CharactersQuery.Data> {
         return api.query(CharactersQuery(Optional.Present(page), Optional.Present(query))).execute()
+    }
+
+    suspend fun queryEpisodeList(page: Int?): ApolloResponse<EpisodesQuery.Data> {
+        return api.query(EpisodesQuery(Optional.Present(page))).execute()
     }
 }

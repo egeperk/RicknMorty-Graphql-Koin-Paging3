@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/feedFragment2">
     <fragment
         android:id="@+id/feedFragment2"
-        android:name="com.egeperk.rickandmorty_final.view.FeedFragment"
+        android:name="com.egeperk.rickandmorty_final.view.feed.FeedFragment"
         android:label="FeedFragment" />
+    <fragment
+        android:id="@+id/episodesFragment"
+        android:name="com.egeperk.rickandmorty_final.view.episodes.EpisodesFragment"
+        android:label="fragment_episodes"
+        tools:layout="@layout/fragment_episodes" />
 </navigation>

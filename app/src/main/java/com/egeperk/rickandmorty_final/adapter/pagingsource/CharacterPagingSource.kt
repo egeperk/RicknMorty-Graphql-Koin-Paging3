@@ -1,12 +1,12 @@
-package com.egeperk.rickandmorty_final.adapter
+package com.egeperk.rickandmorty_final.adapter.pagingsource
 
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.egeperk.rickandmorty_final.repo.CharRepository
+import com.egeperk.rickandmorty_final.repo.ApiRepository
 import com.example.rnm_mvvm.CharactersQuery
 
-class ItemPagingSource(private val repository: CharRepository, private val query: String) :
+class CharacterPagingSource(private val repository: ApiRepository, private val query: String) :
     PagingSource<Int, CharactersQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharactersQuery.Result> {
