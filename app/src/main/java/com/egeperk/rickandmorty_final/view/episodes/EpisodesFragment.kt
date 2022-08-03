@@ -37,9 +37,10 @@ class EpisodesFragment : Fragment() {
                 (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
             v?.let { episodeRv.bottomBarScrollState(it) }
         }
-
         setupRv()
+
         getRemoteData()
+
         return binding.root
     }
 
@@ -50,6 +51,10 @@ class EpisodesFragment : Fragment() {
                 episodeViewModel.getEpisodeData().collectLatest {
                     episodeAdapter.submitData(it)
                 }
+            }
+            binding.apply {
+                noConnectionTv.isVisible = false
+                loadStateRetry.isVisible = false
             }
         }  else {
             binding.apply {

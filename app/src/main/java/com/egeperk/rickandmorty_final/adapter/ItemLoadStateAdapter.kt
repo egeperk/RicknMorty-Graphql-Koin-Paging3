@@ -16,13 +16,11 @@ class ItemLoadStateAdapter(private val retry: () -> Unit) :
 
     override fun onBindViewHolder(holder: LoadStateViewHolder, loadState: LoadState) {
         holder.binding.apply {
-            //loadStateRetry.isVisible = loadState !is LoadState.Loading
             errorText.isVisible = loadState !is LoadState.Loading
         }
 
         if (loadState is LoadState.Error) {
             holder.binding.apply {
-                errorText.isVisible = true
                 errorText.text = loadState.error.localizedMessage
                 loadStateRetry.isVisible = true
             }
@@ -30,7 +28,6 @@ class ItemLoadStateAdapter(private val retry: () -> Unit) :
         holder.binding.loadStateRetry.setOnClickListener {
             retry.invoke()
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder {
@@ -38,5 +35,4 @@ class ItemLoadStateAdapter(private val retry: () -> Unit) :
             parent,
             false))
     }
-
 }

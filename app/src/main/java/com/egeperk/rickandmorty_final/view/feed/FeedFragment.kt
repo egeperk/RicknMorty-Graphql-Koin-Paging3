@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -59,9 +60,7 @@ class FeedFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = charViewModel
 
-            val v =
-                (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
-            v?.let { recyclerView.bottomBarScrollState(it) }
+
 
             filterList = CharacterProvider.provideCharacter()
 
@@ -111,9 +110,6 @@ class FeedFragment : Fragment() {
                     }
                     searchEt.alpha = 1f
                 }
-            }
-            if (loadState.source.append is LoadState.Error) {
-
             }
         }
     }
@@ -243,6 +239,11 @@ class FeedFragment : Fragment() {
     private fun searchItem() {
         charViewModel.search.observe(viewLifecycleOwner) { text ->
             lifecycleScope.launch {
+
+                val v =
+                    (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
+                v?.let { binding.recyclerView.bottomBarScrollState(it) }
+
                 charViewModel.getData(text).collectLatest {
                     charAdapter?.submitData(PagingData.from(emptyList()))
                     charAdapter?.submitData(it)
@@ -250,16 +251,11 @@ class FeedFragment : Fragment() {
                         charAdapter?.submitData(PagingData.from(emptyList()))
                         charAdapter?.submitData(it)
                     }
-
                     if (charAdapter?.snapshot()?.items?.size == 0) {
-                        binding.searchErrorText.isVisible = true
                         charAdapter?.submitData(PagingData.from(emptyList()))
                     }
-
                 }
-
             }
         }
-
     }
 }

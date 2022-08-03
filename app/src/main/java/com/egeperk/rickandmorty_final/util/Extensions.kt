@@ -5,8 +5,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Handler
+import android.view.MotionEvent
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -20,7 +22,7 @@ fun RecyclerView.bottomBarScrollState(v: BottomNavigationView) {
                 RecyclerView.SCROLL_STATE_IDLE -> {
                     Handler().postDelayed({
                         v.isVisible = false
-                    },VIEW_DELAY)
+                    }, VIEW_DELAY)
                 }
                 RecyclerView.SCROLL_STATE_DRAGGING -> {
                     v.isVisible = true
