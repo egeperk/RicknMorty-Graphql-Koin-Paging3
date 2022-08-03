@@ -43,6 +43,6 @@ class CharacterPagingSource(private val repository: ApiRepository, private val q
     }
 
     override fun getRefreshKey(state: PagingState<Int, CharactersQuery.Result>): Int? {
-        return null
+        return state.anchorPosition?.let { state.closestItemToPosition(it)?.id?.toInt() }
     }
 }

@@ -12,12 +12,70 @@
         android:layout_height="match_parent"
         tools:context=".view.episodes.EpisodesFragment">
 
+        <LinearLayout
+            android:background="@color/transparent_black"
+            android:id="@+id/loading_ly"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+        <ProgressBar
+            android:layout_marginTop="8dp"
+            android:id="@+id/progress_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?attr/colorOnSecondary"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/main_header_tv"
+            style="@style/Typography.Bold.Title.24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="@string/episodes"
+            android:textColor="?attr/colorOnSecondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="24dp"
             android:id="@+id/episode_rv"
+            app:layout_constraintTop_toBottomOf="@id/main_header_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
             android:overScrollMode="never"
-            android:layout_height="match_parent"/>
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/no_connection_tv"
+            style="@style/Typography.Bold.Subtitle.16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:text="@string/you_don_t_have_internet_connection"
+            android:textAlignment="center"
+            android:textColor="?attr/colorOnSecondary"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/load_state_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="?attr/colorOnTertiary"
+            android:text="@string/retry"
+            android:textColor="?attr/colorOnSecondary"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_connection_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -18,8 +18,8 @@ class ItemLoadStateAdapter(private val retry: () -> Unit) :
         holder.binding.apply {
             //loadStateRetry.isVisible = loadState !is LoadState.Loading
             errorText.isVisible = loadState !is LoadState.Loading
-            progressLoading.isVisible = loadState is LoadState.Loading
         }
+
         if (loadState is LoadState.Error) {
             holder.binding.apply {
                 errorText.isVisible = true

@@ -16,6 +16,23 @@
         android:layout_height="match_parent"
         android:background="?attr/colorOnPrimary">
 
+        <LinearLayout
+            android:background="@color/transparent_black"
+            android:id="@+id/loading_ly"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <ProgressBar
+                android:layout_marginTop="8dp"
+                android:id="@+id/progress_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="?attr/colorOnSecondary"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/search_error_text"
             style="@style/Typography.Regular.Title.24"
@@ -23,12 +40,12 @@
             android:layout_height="wrap_content"
             android:text="@{@string/no_result(viewModel.search)}"
             android:textAlignment="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_et"
-            android:visibility="gone"
-            tools:text="test"/>
+            tools:text="test" />
 
         <TextView
             android:id="@+id/main_header_tv"
@@ -63,7 +80,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:text="@={viewModel.search}"
             android:id="@+id/search_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +92,7 @@
             android:elevation="10dp"
             android:hint="@string/search"
             android:singleLine="true"
+            android:text="@={viewModel.search}"
             android:textColorHint="@color/drawable_gray"
             app:layout_constraintTop_toBottomOf="@+id/main_header_tv" />
 
@@ -90,35 +107,34 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_et"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/search_et" />
 
-      <TextView
-          android:textColor="?attr/colorOnSecondary"
-          style="@style/Typography.Bold.Subtitle.16"
-          android:id="@+id/no_connection_tv"
-          android:layout_width="0dp"
-          android:textAlignment="center"
-          android:paddingHorizontal="24dp"
-          android:layout_height="wrap_content"
-          android:text="@string/you_don_t_have_internet_connection"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/no_connection_tv"
+            style="@style/Typography.Bold.Subtitle.16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:text="@string/you_don_t_have_internet_connection"
+            android:textAlignment="center"
+            android:textColor="?attr/colorOnSecondary"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:layout_marginTop="12dp"
             android:id="@+id/load_state_retry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/no_connection_tv"
+            android:layout_marginTop="12dp"
             android:backgroundTint="?attr/colorOnTertiary"
             android:text="@string/retry"
             android:textColor="?attr/colorOnSecondary"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_connection_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import com.egeperk.rickandmorty_final.R
+import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.example.rnm_mvvm.CharactersQuery
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -20,7 +21,7 @@ class CharacterAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem())
         Handler().postDelayed({
             mainLy.isVisible = true
             shimmerLy.isVisible = false
-        },2000)
+        },VIEW_DELAY)
     }
 
     override fun getItemViewType(position: Int): Int = if (getItem(position) is CharactersQuery.Result) {

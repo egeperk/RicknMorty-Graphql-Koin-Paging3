@@ -8,8 +8,9 @@ import com.example.rnm_mvvm.EpisodesQuery
 
 class EpisodePagingSource(private val repository: ApiRepository) :
     PagingSource<Int, EpisodesQuery.Result>() {
+
     override fun getRefreshKey(state: PagingState<Int, EpisodesQuery.Result>): Int? {
-        TODO("Not yet implemented")
+        return state.anchorPosition?.let { state.closestItemToPosition(it)?.id?.toInt() }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodesQuery.Result> {

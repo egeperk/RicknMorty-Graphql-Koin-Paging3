@@ -10,4 +10,5 @@
     <color name="shimmerColor">#C2C2C2</color>
     <color name="dark_gray">#232222</color>
     <color name="drawable_gray">#C4C4C4</color>
+    <color name="transparent_black">#2C000000</color>
 </resources>

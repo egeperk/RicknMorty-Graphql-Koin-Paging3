@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_loading.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/layout/option_row.xml" value="0.35104166666666664" />
+        <entry key="app/src/main/res/layout/shimmer_row.xml" value="0.21" />
         <entry key="app/src/main/res/layout/test_row.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/menu/app_menu_row.xml" value="0.34479166666666666" />
       </map>

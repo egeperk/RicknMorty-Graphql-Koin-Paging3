@@ -16,7 +16,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.*
 import com.egeperk.rickandmorty_final.adapter.pagingadapter.FilterAdapter
 import com.egeperk.rickandmorty_final.adapter.pagingadapter.CharacterAdapter
@@ -27,12 +29,15 @@ import com.egeperk.rickandmorty_final.model.CharacterProvider
 import com.egeperk.rickandmorty_final.ui.MainActivity
 import com.egeperk.rickandmorty_final.util.Constants.EMPTY
 import com.egeperk.rickandmorty_final.util.Constants.MORTY
-import com.egeperk.rickandmorty_final.util.Constants.MORTY_POSITION
+import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.RICK
-import com.egeperk.rickandmorty_final.util.Constants.RICK_POSITION
+import com.egeperk.rickandmorty_final.util.Constants.POS0
 import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
 import com.egeperk.rickandmorty_final.util.ThemePreferences
+import com.egeperk.rickandmorty_final.util.bottomBarScrollState
+import com.egeperk.rickandmorty_final.util.hasInternetConnection
 import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,26 +58,13 @@ class FeedFragment : Fragment() {
         binding = FragmentFeedBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = charViewModel
-        }
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+            val v =
+                (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
+            v?.let { recyclerView.bottomBarScrollState(it) }
 
-        checkPreferences()
+            filterList = CharacterProvider.provideCharacter()
 
-        charAdapter = CharacterAdapter()
-
-        observeData()
-
-        filterList = CharacterProvider.provideCharacter()
-
-        binding.apply {
-            recyclerView.adapter = charAdapter?.withLoadStateFooter(
-                footer = ItemLoadStateAdapter { charAdapter?.retry() }
-            )
-            recyclerView.setHasFixedSize(true)
             filterBtn.setOnClickListener {
                 createPopup()
             }
@@ -82,11 +74,52 @@ class FeedFragment : Fragment() {
             searchEt.doOnTextChanged { _, _, _, _ ->
                 searchItem()
             }
+
+        }
+        checkPreferences()
+        setupRv()
+        observeData()
+
+        return binding.root
+    }
+
+    private fun setupRv() {
+
+        charAdapter = CharacterAdapter()
+
+        binding.recyclerView.apply {
+            adapter = charAdapter?.withLoadStateFooter(
+                footer = ItemLoadStateAdapter { charAdapter?.retry() }
+            )
+            setHasFixedSize(true)
+        }
+
+        charAdapter?.addLoadStateListener { loadState ->
+            if (loadState.source.append is LoadState.Loading) {
+                binding.apply {
+                    loadingLy.apply {
+                        isVisible = true
+                        bringToFront()
+                    }
+                    searchEt.alpha = 0.4f
+                }
+            } else {
+                binding.apply {
+                    loadingLy.apply {
+                        isVisible = false
+                        bringToFront()
+                    }
+                    searchEt.alpha = 1f
+                }
+            }
+            if (loadState.source.append is LoadState.Error) {
+
+            }
         }
     }
 
     private fun observeData() {
-        if (hasInternetConnection()){
+        if (activity?.hasInternetConnection() == true) {
             lifecycleScope.launch {
                 binding.recyclerView.isVisible = true
                 charViewModel.getData(EMPTY).collectLatest {
@@ -128,9 +161,9 @@ class FeedFragment : Fragment() {
 
                 filterList[position].isSelected = !filterList[position].isSelected
 
-                if (!filterList[RICK_POSITION].isSelected && !filterList[MORTY_POSITION].isSelected) {
+                if (!filterList[POS0].isSelected && !filterList[POS1].isSelected) {
                     lifecycleScope.launch {
-                        charViewModel.getData("").collectLatest {
+                        charViewModel.getData(EMPTY).collectLatest {
                             charAdapter?.apply {
                                 submitData(PagingData.empty())
                                 submitData(it)
@@ -139,8 +172,8 @@ class FeedFragment : Fragment() {
                     }
                 }
 
-                if (position == RICK_POSITION && filterList[RICK_POSITION].isSelected) {
-                    filterList[MORTY_POSITION].isSelected = false
+                if (position == POS0 && filterList[POS0].isSelected) {
+                    filterList[POS1].isSelected = false
                     lifecycleScope.launch {
                         charViewModel.getData(RICK).collectLatest {
                             charAdapter?.apply {
@@ -151,8 +184,8 @@ class FeedFragment : Fragment() {
                     }
                 }
 
-                if (position == MORTY_POSITION && filterList[MORTY_POSITION].isSelected) {
-                    filterList[RICK_POSITION].isSelected = false
+                if (position == POS1 && filterList[POS1].isSelected) {
+                    filterList[POS0].isSelected = false
                     lifecycleScope.launch {
                         charViewModel.getData(MORTY).collectLatest {
                             charAdapter?.apply {
@@ -184,12 +217,12 @@ class FeedFragment : Fragment() {
         if (!binding.themeBtn.isActivated) {
             binding.themeBtn.isActivated = true
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            ThemePreferences(requireContext()).darkMode = 1
+            ThemePreferences(requireContext()).darkMode = POS1
             (activity as MainActivity?)?.delegate?.applyDayNight()
         } else {
             binding.themeBtn.isActivated = false
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            ThemePreferences(requireContext()).darkMode = 0
+            ThemePreferences(requireContext()).darkMode = POS0
             (activity as MainActivity?)?.delegate?.applyDayNight()
         }
     }
@@ -217,23 +250,16 @@ class FeedFragment : Fragment() {
                         charAdapter?.submitData(PagingData.from(emptyList()))
                         charAdapter?.submitData(it)
                     }
+
+                    if (charAdapter?.snapshot()?.items?.size == 0) {
+                        binding.searchErrorText.isVisible = true
+                        charAdapter?.submitData(PagingData.from(emptyList()))
+                    }
+
                 }
 
             }
         }
 
-    }
-
-    private fun hasInternetConnection() : Boolean {
-        val connectivityManager = activity?.application?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val hasConnection = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(hasConnection) ?: return false
-
-        return when {
-            capabilities.hasTransport(TRANSPORT_WIFI) -> true
-            capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
-            capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
     }
 }
