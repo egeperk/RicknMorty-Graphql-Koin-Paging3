@@ -5,6 +5,12 @@ query Characters($page: Int, $name: String){
             name
             image
             location{name}
+            status
+            type
+            gender
+            origin {name dimension
+            }
+            created
         }
         info{next
         }

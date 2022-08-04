@@ -7,6 +7,11 @@
     <string name="name">Name: %s</string>
     <string name="location">Location: %s</string>
     <string name="id">#id: %s</string>
+    <string name="gender">Gender: %s</string>
+    <string name="type">Type: %s</string>
+    <string name="created">Created: %s</string>
+    <string name="origin">Origin: %s</string>
+    <string name="status">Status: %s</string>
     <string name="filter">Filter</string>
     <string name="search">Search…</string>
     <string name="no_result">\No Result for \"%s\" \</string>

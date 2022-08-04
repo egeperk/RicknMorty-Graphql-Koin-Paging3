@@ -7,10 +7,18 @@
     <fragment
         android:id="@+id/feedFragment2"
         android:name="com.egeperk.rickandmorty_final.view.feed.FeedFragment"
-        android:label="FeedFragment" />
+        android:label="FeedFragment" >
+        <action
+            android:id="@+id/action_feedFragment2_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/episodesFragment"
         android:name="com.egeperk.rickandmorty_final.view.episodes.EpisodesFragment"
         android:label="fragment_episodes"
         tools:layout="@layout/fragment_episodes" />
+    <dialog
+        android:id="@+id/detailFragment"
+        android:name="com.egeperk.rickandmorty_final.view.detail.DetailFragment"
+        android:label="DetailFragment" />
 </navigation>

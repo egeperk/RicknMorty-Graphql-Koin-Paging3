@@ -9,7 +9,7 @@ import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.example.rnm_mvvm.CharactersQuery
 import com.facebook.shimmer.ShimmerFrameLayout
 
-class CharacterAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem()) {
+class CharacterAdapter(private val listener: OnItemClickListener): GenericPagingAdapter<CharactersQuery.Result>(DiffItem()) {
 
     override fun onBindViewHolder(
         holder: GenericViewHolder<CharactersQuery.Result>,
@@ -22,6 +22,9 @@ class CharacterAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem())
             mainLy.isVisible = true
             shimmerLy.isVisible = false
         },VIEW_DELAY)
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(position)
+        }
     }
 
     override fun getItemViewType(position: Int): Int = if (getItem(position) is CharactersQuery.Result) {
@@ -38,5 +41,9 @@ class CharacterAdapter: GenericPagingAdapter<CharactersQuery.Result>(DiffItem())
         override fun areContentsTheSame(oldItem: CharactersQuery.Result, newItem: CharactersQuery.Result): Boolean {
             return oldItem == newItem
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 }

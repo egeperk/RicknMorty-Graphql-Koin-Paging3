@@ -11,5 +11,6 @@ object Constants {
     const val SELECTED_POSITION = -1
     const val DARK_THEME = "dark.theme"
     const val VIEW_DELAY = 1500L
+    const val PARAM_BUNDLE = "bundle"
 
 }

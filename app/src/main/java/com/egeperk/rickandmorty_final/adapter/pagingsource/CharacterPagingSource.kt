@@ -34,10 +34,15 @@ class CharacterPagingSource(private val repository: ApiRepository, private val q
             val characterImage = result?.image
             val characterName = result?.name
             val characterLocation = result?.location
+            val characterStatus = result?.status
+            val characterType = result?.type
+            val characterGender = result?.gender
+            val characterOrigin = result?.origin
+            val characterCreated = result?.created
             characters.add(CharactersQuery.Result(characterId,
                 characterName,
                 characterImage,
-                characterLocation))
+                characterLocation,characterStatus,characterType,characterGender,characterOrigin,characterCreated))
         }
         return characters
     }
