@@ -5,10 +5,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Handler
-import android.view.MotionEvent
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

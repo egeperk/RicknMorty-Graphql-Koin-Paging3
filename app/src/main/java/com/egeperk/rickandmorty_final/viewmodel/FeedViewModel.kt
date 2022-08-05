@@ -11,13 +11,10 @@ import com.egeperk.rickandmorty_final.adapter.pagingsource.CharacterPagingSource
 import com.egeperk.rickandmorty_final.repo.ApiRepository
 import com.example.rnm_mvvm.CharactersQuery
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
-class FeedViewModel (private val repository: ApiRepository) : ViewModel() {
+class FeedViewModel(private val repository: ApiRepository) : ViewModel() {
 
     val search = MutableLiveData<String>()
-    val name = MutableStateFlow<String>("")
 
     private var currentResult: Flow<PagingData<CharactersQuery.Result>>? = null
 
@@ -28,5 +25,4 @@ class FeedViewModel (private val repository: ApiRepository) : ViewModel() {
         currentResult = newResult
         return newResult
     }
-
 }

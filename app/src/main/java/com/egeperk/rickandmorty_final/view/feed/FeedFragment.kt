@@ -1,5 +1,6 @@
 package com.egeperk.rickandmorty_final.view.feed
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -25,6 +25,8 @@ import com.egeperk.rickandmorty_final.model.CharacterProvider
 import com.egeperk.rickandmorty_final.ui.MainActivity
 import com.egeperk.rickandmorty_final.util.Constants.EMPTY
 import com.egeperk.rickandmorty_final.util.Constants.MORTY
+import com.egeperk.rickandmorty_final.util.Constants.PARAM_BUNDLE_IMAGE_KEY
+import com.egeperk.rickandmorty_final.util.Constants.PARAM_BUNDLE_KEY
 import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.util.Constants.POS0
@@ -76,21 +78,19 @@ class FeedFragment : Fragment() {
 
         charAdapter = GenericPagingDataAdapter(R.layout.char_row) {
             val bundle = Bundle()
-            bundle.apply {
-                putString("id", charAdapter?.snapshot()?.items?.get(it)?.id)
-                putString("name", charAdapter?.snapshot()?.items?.get(it)?.name)
-                putString("location", charAdapter?.snapshot()?.items?.get(it)?.location?.name)
-                putString("image", charAdapter?.snapshot()?.items?.get(it)?.image)
-                putString("status", charAdapter?.snapshot()?.items?.get(it)?.status)
-                putString("gender", charAdapter?.snapshot()?.items?.get(it)?.gender)
-                putString("origin", charAdapter?.snapshot()?.items?.get(it)?.origin?.dimension)
-                putString("type", charAdapter?.snapshot()?.items?.get(it)?.type)
-                putString("created", charAdapter?.snapshot()?.items?.get(it)?.created)
+            bundle.putStringArrayList(PARAM_BUNDLE_KEY,
+                arrayListOf(charAdapter?.snapshot()?.items?.get(it)?.id,
+                    charAdapter?.snapshot()?.items?.get(it)?.name,
+                    charAdapter?.snapshot()?.items?.get(it)?.location?.name,
+                    charAdapter?.snapshot()?.items?.get(it)?.status,
+                    charAdapter?.snapshot()?.items?.get(it)?.gender,
+                    charAdapter?.snapshot()?.items?.get(it)?.origin?.dimension,
+                    charAdapter?.snapshot()?.items?.get(it)?.type,
+                    charAdapter?.snapshot()?.items?.get(it)?.created))
 
-            }
+            bundle.putString(PARAM_BUNDLE_IMAGE_KEY, charAdapter?.snapshot()?.items?.get(it)?.image)
 
-            charViewModel.name.value = charAdapter?.snapshot()?.items?.get(it)?.name.toString()
-            findNavController().navigate(R.id.action_feedFragment2_to_detailFragment,bundle)
+            findNavController().navigate(R.id.action_feedFragment2_to_detailFragment, bundle)
         }
 
         binding.recyclerView.apply {
@@ -146,6 +146,7 @@ class FeedFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun createPopup() {
 
         val dialogBinding =
@@ -158,7 +159,7 @@ class FeedFragment : Fragment() {
 
         var selectedPosition = SELECTED_POSITION
 
-        val optionAdapter = GenericPagingDataAdapter<Character>(R.layout.option_row){
+        val optionAdapter = GenericPagingDataAdapter<Character>(R.layout.option_row) {
             filterList[it].isSelected = !filterList[it].isSelected
 
             if (!filterList[POS0].isSelected && !filterList[POS1].isSelected) {

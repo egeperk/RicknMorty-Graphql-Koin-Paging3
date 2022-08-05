@@ -18,7 +18,6 @@ import com.egeperk.rickandmorty_final.util.hasInternetConnection
 import com.egeperk.rickandmorty_final.viewmodel.EpisodeViewModel
 import com.example.rnm_mvvm.EpisodesQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
