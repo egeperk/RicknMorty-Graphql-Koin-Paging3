@@ -9,6 +9,11 @@
             name="viewModel"
             type="com.egeperk.rickandmorty_final.viewmodel.FeedViewModel" />
 
+        <variable
+            name="fragment"
+            type="com.egeperk.rickandmorty_final.view.feed.FeedFragment"/>
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,6 +65,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:onClick="@{() -> fragment.createPopup()}"
             android:id="@+id/filter_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,6 +76,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:onClick="@{() -> fragment.setMode()}"
             android:id="@+id/theme_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,6 +87,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:onTextChanged="@{() -> fragment.searchItem()}"
             android:id="@+id/search_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

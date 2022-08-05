@@ -10,13 +10,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.adapter.ItemLoadStateAdapter
-import com.egeperk.rickandmorty_final.adapter.pagingadapter.EpisodeAdapter
+import com.egeperk.rickandmorty_final.adapter.pagingadapter.GenericPagingDataAdapter
 import com.egeperk.rickandmorty_final.databinding.FragmentEpisodesBinding
 import com.egeperk.rickandmorty_final.ui.MainActivity
 import com.egeperk.rickandmorty_final.util.bottomBarScrollState
 import com.egeperk.rickandmorty_final.util.hasInternetConnection
 import com.egeperk.rickandmorty_final.viewmodel.EpisodeViewModel
+import com.example.rnm_mvvm.EpisodesQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class EpisodesFragment : Fragment() {
 
     private val episodeViewModel by viewModel<EpisodeViewModel>()
-    private lateinit var episodeAdapter: EpisodeAdapter
+    private var episodeAdapter: GenericPagingDataAdapter<EpisodesQuery.Result>? = null
     private lateinit var binding: FragmentEpisodesBinding
 
     override fun onCreateView(
@@ -49,14 +51,14 @@ class EpisodesFragment : Fragment() {
         if (activity?.hasInternetConnection() == true) {
             lifecycleScope.launch {
                 episodeViewModel.getEpisodeData().collectLatest {
-                    episodeAdapter.submitData(it)
+                    episodeAdapter?.submitData(it)
                 }
             }
             binding.apply {
                 noConnectionTv.isVisible = false
                 loadStateRetry.isVisible = false
             }
-        }  else {
+        } else {
             binding.apply {
                 noConnectionTv.isVisible = true
                 loadStateRetry.apply {
@@ -69,21 +71,21 @@ class EpisodesFragment : Fragment() {
         }
     }
 
-    private fun setupRv() {
+        private fun setupRv() {
 
-        episodeAdapter = EpisodeAdapter()
-        binding.episodeRv.adapter =
-            episodeAdapter.withLoadStateFooter( footer = ItemLoadStateAdapter{ episodeAdapter.retry()})
+            episodeAdapter = GenericPagingDataAdapter(R.layout.episode_item_row) {}
+            binding.episodeRv.adapter =
+                episodeAdapter?.withLoadStateFooter(footer = ItemLoadStateAdapter { episodeAdapter?.retry() })
 
-        episodeAdapter.addLoadStateListener { combinedLoadStates ->
-            if (combinedLoadStates.source.append is LoadState.Loading) {
-                binding.loadingLy.apply {
-                    isVisible = true
-                    bringToFront()
+            episodeAdapter?.addLoadStateListener { combinedLoadStates ->
+                if (combinedLoadStates.source.append is LoadState.Loading) {
+                    binding.loadingLy.apply {
+                        isVisible = true
+                        bringToFront()
+                    }
+                } else {
+                    binding.loadingLy.isVisible = false
                 }
-            } else {
-                binding.loadingLy.isVisible = false
             }
         }
     }
-}
