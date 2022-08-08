@@ -15,16 +15,16 @@ import com.egeperk.rickandmorty_final.databinding.FragmentEpisodesBinding
 import com.egeperk.rickandmorty_final.ui.MainActivity
 import com.egeperk.rickandmorty_final.util.bottomBarScrollState
 import com.egeperk.rickandmorty_final.util.hasInternetConnection
-import com.egeperk.rickandmorty_final.viewmodel.EpisodeViewModel
+import com.egeperk.rickandmorty_final.viewmodel.MainViewModel
 import com.example.rnm_mvvm.EpisodesQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class EpisodesFragment : Fragment() {
 
-    private val episodeViewModel by viewModel<EpisodeViewModel>()
+    private val episodeViewModel by sharedViewModel<MainViewModel>()
     private var episodeAdapter: GenericPagingDataAdapter<EpisodesQuery.Result>? = null
     private lateinit var binding: FragmentEpisodesBinding
 

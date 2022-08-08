@@ -3,7 +3,7 @@
 
     <style name="Typography">
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="elevation">0dp</item>
         <item name="android:outlineProvider">none</item>
     </style>

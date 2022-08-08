@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Binder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,18 +35,18 @@ import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
 import com.egeperk.rickandmorty_final.util.ThemePreferences
 import com.egeperk.rickandmorty_final.util.bottomBarScrollState
 import com.egeperk.rickandmorty_final.util.hasInternetConnection
-import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
+import com.egeperk.rickandmorty_final.viewmodel.MainViewModel
 import com.example.rnm_mvvm.CharactersQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class FeedFragment : Fragment() {
 
     private lateinit var binding: FragmentFeedBinding
-    private val charViewModel by viewModel<FeedViewModel>()
+    private val charViewModel by sharedViewModel<MainViewModel>()
     private lateinit var filterList: ArrayList<Character>
     private var charAdapter: GenericPagingDataAdapter<CharactersQuery.Result>? = null
 
@@ -76,19 +77,19 @@ class FeedFragment : Fragment() {
 
     private fun setupRv() {
 
-        charAdapter = GenericPagingDataAdapter(R.layout.char_row) {
+        charAdapter = GenericPagingDataAdapter(R.layout.char_row) { position ->
             val bundle = Bundle()
             bundle.putStringArrayList(PARAM_BUNDLE_KEY,
-                arrayListOf(charAdapter?.snapshot()?.items?.get(it)?.id,
-                    charAdapter?.snapshot()?.items?.get(it)?.name,
-                    charAdapter?.snapshot()?.items?.get(it)?.location?.name,
-                    charAdapter?.snapshot()?.items?.get(it)?.status,
-                    charAdapter?.snapshot()?.items?.get(it)?.gender,
-                    charAdapter?.snapshot()?.items?.get(it)?.origin?.dimension,
-                    charAdapter?.snapshot()?.items?.get(it)?.type,
-                    charAdapter?.snapshot()?.items?.get(it)?.created))
+                arrayListOf(charAdapter?.snapshot()?.items?.get(position)?.id,
+                    charAdapter?.snapshot()?.items?.get(position)?.name,
+                    charAdapter?.snapshot()?.items?.get(position)?.location?.name,
+                    charAdapter?.snapshot()?.items?.get(position)?.status,
+                    charAdapter?.snapshot()?.items?.get(position)?.gender,
+                    charAdapter?.snapshot()?.items?.get(position)?.origin?.dimension,
+                    charAdapter?.snapshot()?.items?.get(position)?.type,
+                    charAdapter?.snapshot()?.items?.get(position)?.created))
 
-            bundle.putString(PARAM_BUNDLE_IMAGE_KEY, charAdapter?.snapshot()?.items?.get(it)?.image)
+            bundle.putString(PARAM_BUNDLE_IMAGE_KEY, charAdapter?.snapshot()?.items?.get(position)?.image)
 
             findNavController().navigate(R.id.action_feedFragment2_to_detailFragment, bundle)
         }
@@ -230,11 +231,11 @@ class FeedFragment : Fragment() {
 
     private fun checkPreferences() {
         when (ThemePreferences(requireContext()).darkMode) {
-            0 -> {
+            POS0 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 (activity as MainActivity?)?.delegate?.applyDayNight()
             }
-            1 -> {
+            POS1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 (activity as MainActivity?)?.delegate?.applyDayNight()
             }
@@ -246,11 +247,15 @@ class FeedFragment : Fragment() {
             lifecycleScope.launch {
 
                 charViewModel.getData(text).collectLatest {
-                    charAdapter?.submitData(PagingData.from(emptyList()))
-                    charAdapter?.submitData(it)
+                    charAdapter?.apply {
+                        submitData(PagingData.from(emptyList()))
+                        submitData(it)
+                    }
                     if (text == EMPTY) {
-                        charAdapter?.submitData(PagingData.from(emptyList()))
-                        charAdapter?.submitData(it)
+                        charAdapter?.apply {
+                            submitData(PagingData.from(emptyList()))
+                            submitData(it)
+                        }
                     }
                     if (charAdapter?.snapshot()?.items?.size == 0) {
                         charAdapter?.submitData(PagingData.from(emptyList()))

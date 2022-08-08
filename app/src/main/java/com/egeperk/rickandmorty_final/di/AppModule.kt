@@ -3,8 +3,7 @@ package com.egeperk.rickandmorty_final.di
 import com.apollographql.apollo3.ApolloClient
 import com.egeperk.rickandmorty_final.repo.ApiRepository
 import com.egeperk.rickandmorty_final.util.Constants
-import com.egeperk.rickandmorty_final.viewmodel.EpisodeViewModel
-import com.egeperk.rickandmorty_final.viewmodel.FeedViewModel
+import com.egeperk.rickandmorty_final.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -18,7 +17,6 @@ object AppModule {
     }
 
     val viewModelModule = module {
-        viewModel { FeedViewModel(get()) }
-        viewModel { EpisodeViewModel(get()) }
+        viewModel { MainViewModel(get()) }
     }
 }

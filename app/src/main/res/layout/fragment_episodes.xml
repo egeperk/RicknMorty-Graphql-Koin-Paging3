@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="@string/episodes"
-            android:textColor="?attr/colorOnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +56,6 @@
             android:paddingHorizontal="24dp"
             android:text="@string/you_don_t_have_internet_connection"
             android:textAlignment="center"
-            android:textColor="?attr/colorOnSecondary"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +69,6 @@
             android:layout_marginTop="12dp"
             android:backgroundTint="?attr/colorOnTertiary"
             android:text="@string/retry"
-            android:textColor="?attr/colorOnSecondary"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

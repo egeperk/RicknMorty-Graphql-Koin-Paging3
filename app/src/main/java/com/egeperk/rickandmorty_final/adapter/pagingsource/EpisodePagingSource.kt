@@ -10,7 +10,10 @@ class EpisodePagingSource(private val repository: ApiRepository) :
     PagingSource<Int, EpisodesQuery.Result>() {
 
     override fun getRefreshKey(state: PagingState<Int, EpisodesQuery.Result>): Int? {
-        return state.anchorPosition?.let { state.closestItemToPosition(it)?.id?.toInt() }
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodesQuery.Result> {
@@ -37,7 +40,7 @@ class EpisodePagingSource(private val repository: ApiRepository) :
             val episodeName = result?.name
             val episodeAirDate = result?.air_date
             val episode = result?.episode
-            characters.add(EpisodesQuery.Result(episodeId,episodeName,episodeAirDate,episode))
+            characters.add(EpisodesQuery.Result(episodeId, episodeName, episodeAirDate, episode))
         }
         return characters
     }

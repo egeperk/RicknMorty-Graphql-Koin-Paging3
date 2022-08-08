@@ -13,7 +13,6 @@
         android:layout_marginBottom="12dp">
 
         <TextView
-            android:textColor="?attr/colorOnSecondary"
             android:layout_marginHorizontal="24dp"
             android:id="@+id/error_text"
             android:textStyle="bold"
@@ -37,7 +36,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:backgroundTint="?attr/colorOnPrimary"
             android:text="@string/retry"
-            android:textColor="?attr/colorOnSecondary"
             android:visibility="invisible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

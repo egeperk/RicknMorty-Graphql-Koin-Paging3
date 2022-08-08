@@ -42,12 +42,20 @@ class CharacterPagingSource(private val repository: ApiRepository, private val q
             characters.add(CharactersQuery.Result(characterId,
                 characterName,
                 characterImage,
-                characterLocation,characterStatus,characterType,characterGender,characterOrigin,characterCreated))
+                characterLocation,
+                characterStatus,
+                characterType,
+                characterGender,
+                characterOrigin,
+                characterCreated))
         }
         return characters
     }
 
     override fun getRefreshKey(state: PagingState<Int, CharactersQuery.Result>): Int? {
-        return state.anchorPosition?.let { state.closestItemToPosition(it)?.id?.toInt() }
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 }

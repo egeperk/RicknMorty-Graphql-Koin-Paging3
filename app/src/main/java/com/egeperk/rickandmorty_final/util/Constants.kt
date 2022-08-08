@@ -13,5 +13,6 @@ object Constants {
     const val VIEW_DELAY = 1500L
     const val PARAM_BUNDLE_KEY = "bundle"
     const val PARAM_BUNDLE_IMAGE_KEY = "image"
+    const val PAGE_SIZE = 20
 
 }

@@ -37,7 +37,6 @@
 
 
             <TextView
-                android:textColor="?attr/colorOnSecondary"
                 style="@style/Typography.Regular.Subtitle.16"
                 android:paddingStart="28dp"
                 android:id="@+id/item_row_id"
@@ -51,7 +50,6 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                android:textColor="?attr/colorOnSecondary"
                 style="@style/Typography.Regular.Subtitle.16"
                 android:id="@+id/item_row_name_tv"
                 android:layout_width="0dp"
@@ -64,7 +62,6 @@
                 app:layout_constraintTop_toBottomOf="@id/item_row_id" />
 
             <TextView
-                android:textColor="?attr/colorOnSecondary"
                 style="@style/Typography.Regular.Subtitle.16"
                 android:id="@+id/item_row_location_tv"
                 android:layout_width="0dp"
