@@ -64,7 +64,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:onClick="@{() -> fragment.createPopup()}"
             android:id="@+id/filter_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -136,6 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:backgroundTint="?attr/colorOnTertiary"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/retry"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"

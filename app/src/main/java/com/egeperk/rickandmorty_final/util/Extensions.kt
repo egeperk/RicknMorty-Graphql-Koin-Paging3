@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Handler
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
@@ -41,5 +42,17 @@ fun Activity.hasInternetConnection(): Boolean {
         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
         else -> false
+    }
+}
+
+fun View.onClickAction(mLastClickTime: Long = 2000, action: () -> Unit) {
+    var isEnabled = true
+    this.setOnClickListener {
+        if (isEnabled) {
+            action()
+            isEnabled = false
+            postDelayed({ isEnabled = true }, mLastClickTime)
+            removeCallbacks(action)
+        }
     }
 }

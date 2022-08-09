@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.episodes.EpisodesFragment">
+        tools:context=".view.episodes.EpisodesFragment"
+        android:background="?attr/colorOnPrimary">
 
         <LinearLayout
             android:background="@color/transparent_black"
@@ -68,6 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:backgroundTint="?attr/colorOnTertiary"
+            android:textColor="?attr/colorOnSecondary"
             android:text="@string/retry"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"

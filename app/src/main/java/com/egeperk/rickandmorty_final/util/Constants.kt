@@ -10,7 +10,7 @@ object Constants {
     const val EMPTY = ""
     const val SELECTED_POSITION = -1
     const val DARK_THEME = "dark.theme"
-    const val VIEW_DELAY = 1500L
+    const val VIEW_DELAY = 2000L
     const val PARAM_BUNDLE_KEY = "bundle"
     const val PARAM_BUNDLE_IMAGE_KEY = "image"
     const val PAGE_SIZE = 20

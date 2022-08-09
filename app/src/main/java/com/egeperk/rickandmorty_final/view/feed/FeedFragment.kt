@@ -32,14 +32,18 @@ import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.util.Constants.POS0
 import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
+import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.egeperk.rickandmorty_final.util.ThemePreferences
 import com.egeperk.rickandmorty_final.util.bottomBarScrollState
 import com.egeperk.rickandmorty_final.util.hasInternetConnection
+import com.egeperk.rickandmorty_final.util.onClickAction
 import com.egeperk.rickandmorty_final.viewmodel.MainViewModel
 import com.example.rnm_mvvm.CharactersQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -49,6 +53,8 @@ class FeedFragment : Fragment() {
     private val charViewModel by sharedViewModel<MainViewModel>()
     private lateinit var filterList: ArrayList<Character>
     private var charAdapter: GenericPagingDataAdapter<CharactersQuery.Result>? = null
+    private var isClicked = false
+    private var isDark = false
 
 
     override fun onCreateView(
@@ -60,6 +66,7 @@ class FeedFragment : Fragment() {
             viewModel = charViewModel
             fragment = this@FeedFragment
 
+            filterBtn.onClickAction { createPopup() }
 
             val v =
                 (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
@@ -91,7 +98,14 @@ class FeedFragment : Fragment() {
 
             bundle.putString(PARAM_BUNDLE_IMAGE_KEY, charAdapter?.snapshot()?.items?.get(position)?.image)
 
-            findNavController().navigate(R.id.action_feedFragment2_to_detailFragment, bundle)
+            try {
+                findNavController().navigate(R.id.action_feedFragment_to_detailFragment, bundle)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+
+
         }
 
         binding.recyclerView.apply {
@@ -102,6 +116,11 @@ class FeedFragment : Fragment() {
         }
 
         charAdapter?.addLoadStateListener { loadState ->
+
+            if (isClicked) {
+                binding.searchErrorText.isVisible = charAdapter?.snapshot()?.items?.size == 0
+            }
+
             if (loadState.source.append is LoadState.Loading) {
                 binding.apply {
                     loadingLy.apply {
@@ -216,13 +235,13 @@ class FeedFragment : Fragment() {
     }
 
     fun setMode() {
-        if (!binding.themeBtn.isActivated) {
-            binding.themeBtn.isActivated = true
+        if (!isDark) {
+            isDark = true
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             ThemePreferences(requireContext()).darkMode = POS1
             (activity as MainActivity?)?.delegate?.applyDayNight()
         } else {
-            binding.themeBtn.isActivated = false
+            isDark = false
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             ThemePreferences(requireContext()).darkMode = POS0
             (activity as MainActivity?)?.delegate?.applyDayNight()
@@ -243,6 +262,8 @@ class FeedFragment : Fragment() {
     }
 
     fun searchItem() {
+
+        isClicked = true
         charViewModel.search.observe(viewLifecycleOwner) { text ->
             lifecycleScope.launch {
 
