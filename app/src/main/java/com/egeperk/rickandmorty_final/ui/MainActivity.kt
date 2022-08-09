@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.egeperk.rickandmorty_final.R
 import com.egeperk.rickandmorty_final.databinding.ActivityMainBinding
 
@@ -21,9 +23,10 @@ class MainActivity : AppCompatActivity() {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
             val navController = navHostFragment.navController
-            NavigationUI.setupWithNavController(menuNavBar, navController)
-
-            menuNavBar.itemIconTintList = null
+            menuNavBar.apply {
+                setupWithNavController(navController)
+                itemIconTintList = null
+            }
         }
     }
 }

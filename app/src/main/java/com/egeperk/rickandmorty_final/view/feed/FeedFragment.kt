@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -55,6 +56,7 @@ class FeedFragment : Fragment() {
     private var charAdapter: GenericPagingDataAdapter<CharactersQuery.Result>? = null
     private var isClicked = false
     private var isDark = false
+    private var v: BottomNavigationView? = null
 
 
     override fun onCreateView(
@@ -68,7 +70,7 @@ class FeedFragment : Fragment() {
 
             filterBtn.onClickAction { createPopup() }
 
-            val v =
+            v =
                 (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
             v?.let { recyclerView.bottomBarScrollState(it) }
 
@@ -161,6 +163,15 @@ class FeedFragment : Fragment() {
                     }
                 }
             }
+        }
+        if (charViewModel.search.value?.isNotEmpty() == true && charAdapter?.snapshot()?.items?.size == 0) {
+            binding.apply {
+                lifecycleScope.launch{
+                    charAdapter?.submitData(PagingData.empty())
+                }
+                searchErrorText.isVisible = true
+            }
+            v?.isVisible = true
         }
     }
 
