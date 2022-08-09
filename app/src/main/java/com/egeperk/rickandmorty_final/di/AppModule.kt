@@ -11,7 +11,7 @@ object AppModule {
 
     val repoModule = module {
         single { ApiRepository(get()) }
-        single<ApolloClient> {
+        single {
             ApolloClient.Builder().serverUrl(Constants.SERVER_URL).build()
         }
     }

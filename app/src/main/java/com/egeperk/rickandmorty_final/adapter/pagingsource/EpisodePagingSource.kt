@@ -3,7 +3,6 @@ package com.egeperk.rickandmorty_final.adapter.pagingsource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.egeperk.rickandmorty_final.repo.ApiRepository
-import com.example.rnm_mvvm.CharactersQuery
 import com.example.rnm_mvvm.EpisodesQuery
 
 class EpisodePagingSource(private val repository: ApiRepository) :

@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Binder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -33,7 +31,6 @@ import com.egeperk.rickandmorty_final.util.Constants.POS1
 import com.egeperk.rickandmorty_final.util.Constants.RICK
 import com.egeperk.rickandmorty_final.util.Constants.POS0
 import com.egeperk.rickandmorty_final.util.Constants.SELECTED_POSITION
-import com.egeperk.rickandmorty_final.util.Constants.VIEW_DELAY
 import com.egeperk.rickandmorty_final.util.ThemePreferences
 import com.egeperk.rickandmorty_final.util.bottomBarScrollState
 import com.egeperk.rickandmorty_final.util.hasInternetConnection
@@ -41,10 +38,8 @@ import com.egeperk.rickandmorty_final.util.onClickAction
 import com.egeperk.rickandmorty_final.viewmodel.MainViewModel
 import com.example.rnm_mvvm.CharactersQuery
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -71,7 +66,7 @@ class FeedFragment : Fragment() {
             filterBtn.onClickAction { createPopup() }
 
             v =
-                (activity as? MainActivity)?.findViewById<BottomNavigationView>(R.id.menu_nav_bar)
+                (activity as? MainActivity)?.findViewById(R.id.menu_nav_bar)
             v?.let { recyclerView.bottomBarScrollState(it) }
 
             filterList = CharacterProvider.provideCharacter()
