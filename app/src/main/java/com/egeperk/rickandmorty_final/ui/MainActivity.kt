@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView<ActivityMainBinding?>(
+        DataBindingUtil.setContentView<ActivityMainBinding?>(
             this, R.layout.activity_main).apply {
 
             val navHostFragment =
