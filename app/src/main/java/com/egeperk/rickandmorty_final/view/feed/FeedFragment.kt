@@ -96,16 +96,14 @@ class FeedFragment : Fragment() {
                     charAdapter?.snapshot()?.items?.get(position)?.type,
                     charAdapter?.snapshot()?.items?.get(position)?.created))
 
-            bundle.putString(PARAM_BUNDLE_IMAGE_KEY, charAdapter?.snapshot()?.items?.get(position)?.image)
+            bundle.putString(PARAM_BUNDLE_IMAGE_KEY,
+                charAdapter?.snapshot()?.items?.get(position)?.image)
 
             try {
                 findNavController().navigate(R.id.action_feedFragment_to_detailFragment, bundle)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-
-
         }
 
         binding.recyclerView.apply {
