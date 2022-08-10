@@ -11,32 +11,46 @@ import com.egeperk.rickandmorty_final.adapter.pagingsource.CharacterPagingSource
 import com.egeperk.rickandmorty_final.adapter.pagingsource.EpisodePagingSource
 import com.egeperk.rickandmorty_final.repo.ApiRepository
 import com.egeperk.rickandmorty_final.util.Constants
+import com.egeperk.rickandmorty_final.util.Constants.EMPTY
 import com.example.rnm_mvvm.CharactersQuery
 import com.example.rnm_mvvm.EpisodesQuery
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: ApiRepository): ViewModel() {
 
-    val search = MutableLiveData<String>()
+    val search = MutableStateFlow(EMPTY)
+    val isSelected = MutableStateFlow(false)
 
-    private var currentEpisodeResult: Flow<PagingData<EpisodesQuery.Result>>? = null
-    private var currentCharacterResult: Flow<PagingData<CharactersQuery.Result>>? = null
+    private val _charResult = MutableStateFlow<PagingData<CharactersQuery.Result>>(PagingData.empty())
+    val charResult = _charResult.asStateFlow()
+
+    private val _episodeResult = MutableStateFlow<PagingData<EpisodesQuery.Result>>(PagingData.empty())
+    val episodeResult = _episodeResult.asStateFlow()
 
 
-    fun getEpisodeData(): Flow<PagingData<EpisodesQuery.Result>> {
-        val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
-            EpisodePagingSource(repository)
-        }.flow.cachedIn(viewModelScope)
-        currentEpisodeResult = newResult
-        return newResult
+    private fun getEpisodeData(): StateFlow<PagingData<EpisodesQuery.Result>> {
+        viewModelScope.launch {
+            val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
+                EpisodePagingSource(repository)
+            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            _episodeResult.value = newResult.value
+        }
+        return _episodeResult
     }
 
-    fun getData(query: String): Flow<PagingData<CharactersQuery.Result>> {
-        val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
-            CharacterPagingSource(repository, query)
-        }.flow.cachedIn(viewModelScope)
-        currentCharacterResult = newResult
-        return newResult
+    fun getData(query: String): StateFlow<PagingData<CharactersQuery.Result>>{
+        viewModelScope.launch {
+            val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
+                CharacterPagingSource(repository, query)
+            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            _charResult.value = newResult.value
+        }
+        return charResult
     }
 
+    init {
+        getData(EMPTY)
+        getEpisodeData()
+    }
 }

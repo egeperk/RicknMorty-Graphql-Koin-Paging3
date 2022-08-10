@@ -31,14 +31,13 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="0dp"
-            android:layout_height="3dp"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
             android:layout_marginTop="8dp"
             android:background="@color/shimmerColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.5" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
         <TextView

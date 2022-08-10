@@ -83,15 +83,16 @@ class FeedFragment : Fragment() {
 
         charAdapter = GenericPagingDataAdapter(R.layout.char_row) { position ->
             val bundle = Bundle()
+            val item = charAdapter?.snapshot()?.items?.get(position)
             bundle.putStringArrayList(PARAM_BUNDLE_KEY,
-                arrayListOf(charAdapter?.snapshot()?.items?.get(position)?.id,
-                    charAdapter?.snapshot()?.items?.get(position)?.name,
-                    charAdapter?.snapshot()?.items?.get(position)?.location?.name,
-                    charAdapter?.snapshot()?.items?.get(position)?.status,
-                    charAdapter?.snapshot()?.items?.get(position)?.gender,
-                    charAdapter?.snapshot()?.items?.get(position)?.origin?.dimension,
-                    charAdapter?.snapshot()?.items?.get(position)?.type,
-                    charAdapter?.snapshot()?.items?.get(position)?.created))
+                arrayListOf(item?.id,
+                    item?.name,
+                    item?.location?.name,
+                    item?.status,
+                    item?.gender,
+                    item?.origin?.dimension,
+                    item?.type,
+                    item?.created))
 
             bundle.putString(PARAM_BUNDLE_IMAGE_KEY,
                 charAdapter?.snapshot()?.items?.get(position)?.image)
@@ -138,12 +139,12 @@ class FeedFragment : Fragment() {
 
     private fun observeData() {
         if (activity?.hasInternetConnection() == true) {
+
             lifecycleScope.launch {
-                binding.recyclerView.isVisible = true
-                charViewModel.getData(EMPTY).collectLatest {
-                    charAdapter?.submitData(it)
-                }
+                charAdapter?.submitData(charViewModel.charResult.value)
             }
+
+
             binding.apply {
                 noConnectionTv.isVisible = false
                 loadStateRetry.isVisible = false
@@ -158,15 +159,6 @@ class FeedFragment : Fragment() {
                     }
                 }
             }
-        }
-        if (charViewModel.search.value?.isNotEmpty() == true && charAdapter?.snapshot()?.items?.size == 0) {
-            binding.apply {
-                lifecycleScope.launch{
-                    charAdapter?.submitData(PagingData.empty())
-                }
-                searchErrorText.isVisible = true
-            }
-            v?.isVisible = true
         }
     }
 
@@ -198,6 +190,10 @@ class FeedFragment : Fragment() {
             }
 
             if (it == POS0 && filterList[POS0].isSelected) {
+                charViewModel.isSelected.value = true
+                if (charViewModel.isSelected.value) {
+                    
+                }
                 filterList[POS1].isSelected = false
                 lifecycleScope.launch {
                     charViewModel.getData(RICK).collectLatest {
@@ -268,23 +264,24 @@ class FeedFragment : Fragment() {
     fun searchItem() {
 
         isClicked = true
-        charViewModel.search.observe(viewLifecycleOwner) { text ->
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+        charViewModel.search.collectLatest { text ->
 
-                charViewModel.getData(text).collectLatest {
+                charAdapter?.apply {
+                    submitData(PagingData.from(emptyList()))
+                    submitData(
+                        charViewModel.getData(text).value)
+                }
+
+                if (text == EMPTY) {
                     charAdapter?.apply {
                         submitData(PagingData.from(emptyList()))
-                        submitData(it)
+                        submitData(charViewModel.getData(EMPTY).value)
                     }
-                    if (text == EMPTY) {
-                        charAdapter?.apply {
-                            submitData(PagingData.from(emptyList()))
-                            submitData(it)
-                        }
-                    }
-                    if (charAdapter?.snapshot()?.items?.size == 0) {
-                        charAdapter?.submitData(PagingData.from(emptyList()))
-                    }
+                }
+
+                if (charAdapter?.snapshot()?.items?.size == 0) {
+                    charAdapter?.submitData(PagingData.from(emptyList()))
                 }
             }
         }

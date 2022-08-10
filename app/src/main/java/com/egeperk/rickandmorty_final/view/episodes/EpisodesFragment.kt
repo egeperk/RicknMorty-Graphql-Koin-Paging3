@@ -48,11 +48,9 @@ class EpisodesFragment : Fragment() {
     private fun getRemoteData() {
 
         if (activity?.hasInternetConnection() == true) {
-            lifecycleScope.launch {
-                episodeViewModel.getEpisodeData().collectLatest {
-                    episodeAdapter?.submitData(it)
-                }
-            }
+
+            episodeAdapter?.submitData(lifecycle,episodeViewModel.episodeResult.value)
+
             binding.apply {
                 noConnectionTv.isVisible = false
                 loadStateRetry.isVisible = false
